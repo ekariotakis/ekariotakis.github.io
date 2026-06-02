@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Emmanouil Kariotakis</title>
+    <meta name="author" content="Emmanouil Kariotakis" />
+    <meta name="description"
+        content="A simple, whitespace theme for academics. Based on [*folio](https://github.com/bogoli/-folio) design. " />
+    <meta name="keywords" content="jekyll, jekyll-theme, academic-website, portfolio-website" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha256-DF7Zhf293AJxJNTmh5zhoYYIMs2oXitRfBjY+9L//AY=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/css/mdb.min.css"
+        integrity="sha256-jpjYvU3G3N6nrrBwXJoVEYI/0zw8htfFnhT9ljN3JJw=" crossorigin="anonymous" />
+        <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"
+            integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous"> -->
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css"
+                integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+        integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.1/css/academicons.min.css"
+        integrity="sha256-i1+4qU2G2860dGGIOJscdC30s9beBXjFfzjWLjBRsBg=" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css"
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:100,300,400,500,700|Material+Icons">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jwarby/jekyll-pygments-themes@master/github.css"
+        media="none" id="highlight_theme_light" />
+    <!-- <link rel="shortcut icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚛️</text></svg>"> -->
+    <link rel="shortcut icon" type="image/png" href="/assets/img/sherlock_face_chatgpt.png">
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="canonical" href="https://ekariotakis.github.io/">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jwarby/jekyll-pygments-themes@master/native.css"
+        media="none" id="highlight_theme_dark" />
+    <script src="/assets/js/theme.js"></script>
+    <script src="/assets/js/dark_mode.js"></script>
+
+    <style>
+        .contact-icons .d-flex {
+            margin-bottom: 0px !important;
+        }
+        .contact-icons .mt-0, .contact-icons .mt-2 {
+            margin-top: -40px !important;
+        }
+        .contact-icons a {
+            font-size: 24px !important; /* Adding !important ensures it overrides the theme's default */
+            margin-right: 8px;
+        }
+        .email-text {
+            font-size: 14px;
+            font-family: 'Roboto', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="fixed-top-nav ">
+    <header>
+        <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top">
+            <div class="container"> <a class="navbar-brand title font-weight-lighter" href="/"><span
+                        class="font-weight-bold">Manos </span>Kariotakis</a> <button
+                    class="navbar-toggler collapsed ml-auto" type="button" data-toggle="collapse"
+                    data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                    aria-label="Toggle navigation"> <span class="sr-only">Toggle navigation</span> <span
+                        class="icon-bar top-bar"></span> <span class="icon-bar middle-bar"></span> <span
+                        class="icon-bar bottom-bar"></span> </button>
+                <div class="collapse navbar-collapse text-right" id="navbarNav">
+                    <ul class="navbar-nav ml-auto flex-nowrap">
+                        <!-- <li class="nav-item active"> <a class="nav-link" href="/">about<span class="sr-only">(current)</span></a> </li> -->
+                        <!-- <li class="nav-item "> <a class="nav-link" href="/cv/">CV</a> </li> -->
+                        <li class="nav-item "> <a class="nav-link" href="/assets/pdf/CV_EmmanouilKariotakis_2026.05.02.pdf" target="_blank"><i class="fas fa-file-pdf"></i> CV</a> </li>
+                        <!-- <a href="/assets/pdf/CV_EmmanouilKariotakis_2026.05.02.pdf" target="_blank" rel="noopener noreferrer" role="button" class="cv-link"><i class="fas fa-file-pdf"></i> CV</a> -->
+                        <li class="nav-item "> <a class="nav-link" href="#news-section">News</a> </li>
+                        <li class="nav-item "> <a class="nav-link" href="#publications-section">Publications</a> </li>
+                        <!-- <li class="nav-item "> <a class="nav-link" href="/contact/">Contact</a> </li> -->
+                        <!-- <li class="nav-item dropdown "> <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                                role="button" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">submenus</a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown"> <a
+                                    class="dropdown-item" href="/publications/">publications</a>
+                                <div class="dropdown-divider"></div> <a class="dropdown-item"
+                                    href="/projects/">projects</a>
+                            </div>
+                        </li> -->
+                        <li class="toggle-container"> <button id="light-toggle" title="Change theme"> <i
+                                    class="fas fa-moon"></i> <i class="fas fa-sun"></i> </button> </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container mt-5">
+        <div class="post">
+            <header class="post-header">
+                <h1 class="post-title"> Emmanouil (Manos) Kariotakis</h1>
+                <p class="desc">PhD Researcher @ <a
+                    href="https://www.kuleuven.be/english/kuleuven/index.html" target="_blank"
+                    rel="noopener noreferrer">KU Leuven</a> 
+                </p>
+            </header>
+            <article>
+                <div class="profile float-right">
+            <figure>
+                <picture>
+                    <img src="/assets/img/me.jpeg" class="img-fluid z-depth-1 rounded-circle"
+                        width="auto" height="auto" alt="me.jpeg"
+                        onerror="this.onerror=null; $('.responsive-img-srcset').remove();">
+                </picture>
+            </figure>
+
+            <!-- The social block is now placed directly under the photo -->
+            <div class="social mt-1"> 
+                <div class="contact-icons">   
+                    <!-- Email Row -->
+                    <div class="d-flex align-items-center mb-0">
+                        <a href="mailto:emmanouil.kariotakis@kuleuven.be" title="email" class="mr-2">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                        <span class="email-text">emmanouil.kariotakis@kuleuven.be</span>
+                    </div>
+
+                    <!-- Icons Row -->
+                    <div class="mt-0">
+                        <a href="https://scholar.google.com/citations?user=jpqJNCsAAAAJ&hl=en&oi=ao" title="Scholar" target="_blank" rel="noopener noreferrer"><i class="ai ai-google-scholar"></i></a>
+                        <a href="https://github.com/ekariotakis" title="GitHub" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/ekariotakis/" title="LinkedIn" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a> 
+                    </div>
+                </div>
+                <p class="mt-0 small text-muted">Kasteelpark Arenberg 10, 3001 Leuven</p>
+            </div>
+        </div>
+                <div class="clearfix"> 
+                    <p>Welcome! I am Manos and I am a PhD
+                        researcher in <a
+                        href="https://www.esat.kuleuven.be/stadius/" target="_blank"
+                        rel="noopener noreferrer">STADIUS</a> - <a
+                        href="https://www.esat.kuleuven.be/english/overview" target="_blank"
+                        rel="noopener noreferrer">ESAT</a> at <a
+                        href="https://www.kuleuven.be/english/kuleuven/index.html" target="_blank"
+                        rel="noopener noreferrer">KU Leuven</a>, in Belgium. Along with my supervisor <a
+                            href="https://aritrakonar.github.io/" target="_blank"
+                            rel="noopener noreferrer">Prof. Aritra Konar</a>, we are interested in topics related to <b>Graph Machine Learning</b> and <b>Algorithmic Fairness</b>.</p>
+                    <!-- <p>Currently, our goal is to find dense subgraphs with fairness related constraints.</p> -->
+                    <!-- <p>Currently, our goal is to explore algorithmic fairness in the densest subgraph problem.</p> -->
+                    <p>Before joining KU Leuven, I was a member of the <a
+                        href="https://spl.ics.forth.gr/" target="_blank"
+                        rel="noopener noreferrer">Signal Processing Laboratory</a> of Institue of Computer Science - FORTH, 
+                        as a research assistant. There, advised by <a
+                        href="https://users.ics.forth.gr/~greg/" target="_blank"
+                        rel="noopener noreferrer">Prof. Grigorios Tsagkatakis</a>, <a
+                        href="https://akyrillidis.github.io/" target="_blank"
+                        rel="noopener noreferrer">Prof. Anastasios Kyrillidis</a> and <a
+                        href="https://users.ics.forth.gr/~tsakalid/" target="_blank"
+                        rel="noopener noreferrer">Prof. Panagiotis Tsakalides</a>, we designed and studied a system that leverages sparsity 
+                        across input and intermediate layers of a neural network that gets trained and operates in a distributed manner 
+                        by resource-constrained workers.</p>
+                        <p>Before that, I earned my BSc and integrated MEng in Electrical and Computer Engineering from <a
+                            href="https://www.tuc.gr/en/home" target="_blank"
+                            rel="noopener noreferrer">Technical University of Crete (TUC)</a>. There, I had the opportunity to work with <a
+                            href="https://www.telecom.tuc.gr/~aggelos/" target="_blank"
+                            rel="noopener noreferrer">Prof. Aggelos Bletsas</a>,
+                            focusing on efficient probabilistic asynchronous wireless in-network inference.</p>
+                            
+                        
+                </div>
+
+                <div class="news">
+                    <h2 id="news-section">News</h2>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-borderless">
+                            <tr>
+                                <th scope="row">Apr 30, 2026</th>
+                                <td> <a href="projects/fairrari_project_page/index.html" target="_blank"
+                                    rel="noopener noreferrer">Paper</a> accepted in International Conference on Machine Learning (ICML), 2026!</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Jan 16, 2026</th>
+                                <td> Paper accepted in 2026 IEEE International Conference on Acoustics, Speech, and Signal Processing (ICASSP)!</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Apr 29, 2025</th>
+                                <td> My first PhD <a href="https://openreview.net/forum?id=7rqV7Cb67L" target="_blank"
+                                    rel="noopener noreferrer">publication</a> in Transactions on Machine Learning Research (TMLR)!</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Sep 18, 2023</th>
+                                <td> I started my Phd at <a
+                                    href="https://www.kuleuven.be/english/kuleuven/index.html" target="_blank"
+                                    rel="noopener noreferrer">KU Leuven</a>! </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Sep 08, 2023</th>
+                                <td> My first <a href="https://ieeexplore.ieee.org/document/10290065" target="_blank"
+                                    rel="noopener noreferrer">publication</a>! At EUSIPCO 2023.</td>
+                            </tr>
+                            <!-- <tr>
+                                <th scope="row">Sep 18, 2023</th>
+                                <td> Emoji <img class="emoji"
+                                        title=":sparkles:" alt=":sparkles:"
+                                        src="https://github.githubassets.com/images/icons/emoji/unicode/2728.png"
+                                        height="20" width="20"> <img class="emoji" title=":smile:" alt=":smile:"
+                                        src="https://github.githubassets.com/images/icons/emoji/unicode/1f604.png"
+                                        height="20" width="20"> </td>
+                            </tr> -->
+                            <!-- <tr>
+                                <th scope="row">Nov 7, 2015</th>
+                                <td> <a class="news-title" href="/news/announcement_2/">A long announcement with
+                                        details</a> </td>
+                            </tr> -->
+                            <!-- <tr>
+                                <th scope="row">Oct 22, 2015</th>
+                                <td> A simple inline announcement. </td>
+                            </tr> -->
+                        </table>
+                    </div>
+                </div>
+
+                <h2 id="publications-section">Publications</h2>
+                <!-- _includes/publications_list.html -->
+<div class="publications">
+  <h2 class="year">2026</h2>
+  <ol class="bibliography">
+    <li>
+      <div class="row">
+        <div class="col-sm-3 preview"><img class="preview z-depth-1" src="/assets/img/publication_preview/FairRARI_teaser.png"></div>
+        <div id="kariotakis2026fairrari" class="col-sm-8">
+          <div class="title">FairRARI: A Plug and Play Framework for Fairness-Aware PageRank</div>
+          <div class="author"> <em>E. Kariotakis</em> and <a href="https://aritrakonar.github.io/" target="_blank" rel="noopener noreferrer">A. Konar</a></div>
+          <div class="periodical"> ICML, 2026 </div>
+          <div class="links"> 
+            <a class="bibtex btn btn-sm z-depth-0" role="button">Bib</a>
+            <a href="https://arxiv.org/pdf/2602.08589" class="btn btn-sm z-depth-0" role="button" target="_blank" rel="noopener noreferrer">Paper</a> 
+            <a href="../projects/fairrari_project_page/index.html" class="btn btn-sm z-depth-0" role="button" target="_blank" rel="noopener noreferrer">Project Page</a> 
+          </div>
+          <div class="bibtex hidden">
+            <pre>@inproceedings{kariotakis2026fairrari,
+            title={FairRARI: A Plug and Play Framework for Fairness-Aware PageRank},
+            author={Kariotakis, Emmanouil and Konar, Aritra},
+            booktitle={International Conference on Machine Learning (ICML)},
+            year={2026}
+          }</pre>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ol>
+  <ol class="bibliography">
+    <li>
+      <div class="row">
+        <div class="col-sm-3 preview"><img class="preview z-depth-1" src="/assets/img/publication_preview/oqc_combined.png"></div>
+        <div id="kariotakis2026optimal" class="col-sm-8">
+          <div class="title">Optimal Quasi-Clique Detection via Lasry-Lions Double Envelopes</div>
+          <div class="author"> <em>E. Kariotakis</em>, <a href="https://alexanderbodard.github.io/" target="_blank" rel="noopener noreferrer">A. Bodard</a>, <a href="https://homes.esat.kuleuven.be/~ppatrino/" target="_blank" rel="noopener noreferrer">P. Patrinos</a> and <a href="https://aritrakonar.github.io/" target="_blank" rel="noopener noreferrer">A. Konar</a></div>
+          <div class="periodical"> ICASSP, 2026 </div>
+          <div class="links"> 
+            <a class="bibtex btn btn-sm z-depth-0" role="button">Bib</a>
+            <a href="https://ieeexplore.ieee.org/abstract/document/11463516" class="btn btn-sm z-depth-0" role="button" target="_blank" rel="noopener noreferrer">Paper</a> 
+          </div>
+          <div class="bibtex hidden">
+            <pre>@inproceedings{kariotakis2026optimal,
+            title={Optimal Quasi-Clique Detection Via Lasry-Lions Double Envelopes},
+            author={Kariotakis, Emmanouil and Bodard, Alexander and Patrinos, Panagiotis and Konar, Aritra},
+            booktitle={ICASSP 2026-2026 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)},
+            pages={416--420},
+            year={2026},
+            organization={IEEE}
+          }</pre>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ol>
+
+  <h2 class="year">2025</h2>
+  <ol class="bibliography">
+    <li>
+      <div class="row">
+        <div class="col-sm-3 preview"><img class="preview z-depth-1" src="/assets/img/publication_preview/FADSG_story.png"></div>
+        <div id="kariotakis2025fairnessaware" class="col-sm-8">
+          <div class="title">Fairness-Aware Dense Subgraph Discovery</div>
+          <div class="author"> <em>E. Kariotakis</em>, <a href="https://nikossidiropoulos.github.io/" target="_blank" rel="noopener noreferrer">N. D. Sidiropoulos</a> and <a href="https://aritrakonar.github.io/" target="_blank" rel="noopener noreferrer">A. Konar</a></div>
+          <div class="periodical"> TMLR, 2025 </div>
+          <div class="links"> 
+            <a class="bibtex btn btn-sm z-depth-0" role="button">Bib</a>
+            <a href="https://openreview.net/forum?id=7rqV7Cb67L" class="btn btn-sm z-depth-0" role="button" target="_blank" rel="noopener noreferrer">Paper</a> 
+          </div>
+          <div class="bibtex hidden">
+            <pre>@article{kariotakis2025fairness,
+            title={Fairness-Aware Dense Subgraph Discovery},
+            author={Kariotakis, Emmanouil and Sidiropoulos, Nicholas D and Konar, Aritra},
+            journal={Transactions on Machine Learning Research},
+            year={2025}
+          }</pre>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ol>
+
+  <h2 class="year">2024</h2>
+  <ol class="bibliography">
+    <li>
+      <div class="row">
+        <div class="col-sm-3 preview"><img class="preview z-depth-1" src="/assets/img/publication_preview/roundabout_CLS_MLP_IST (2).png"></div>
+        <div id="kariotakis2024leveraging" class="col-sm-8">
+          <div class="title">Leveraging Sparse Input and Sparse Models: Efficient Distributed Learning in Resource-Constrained Environments</div>
+          <div class="author"> <em>E. Kariotakis</em>, <a href="https://users.ics.forth.gr/~greg/" target="_blank" rel="noopener noreferrer">G. Tsagkatakis</a>, <a href="https://users.ics.forth.gr/~tsakalid/" target="_blank" rel="noopener noreferrer">P. Tsakalides</a> and <a href="https://akyrillidis.github.io/" target="_blank" rel="noopener noreferrer">A. Kyrillidis</a> </div>
+          <div class="periodical"> CPAL, 2024 </div>
+          <div class="links"> 
+            <a class="bibtex btn btn-sm z-depth-0" role="button">Bib</a>
+            <a href="https://proceedings.mlr.press/v234/kariotakis24a" class="btn btn-sm z-depth-0" role="button" target="_blank" rel="noopener noreferrer">Paper</a> 
+          </div>
+          <div class="bibtex hidden">
+            <pre>@inproceedings{kariotakis2024leveraging,
+            title={Leveraging Sparse Input and Sparse Models: Efficient Distributed Learning in Resource-Constrained Environments},
+            author={Kariotakis, Emmanouil and Tsagkatakis, George and Tsakalides, Panos and Kyrillidis, Anastasios},
+            booktitle={Conference on Parsimony and Learning},
+            pages={554--569},
+            year={2024},
+            organization={PMLR}
+          }</pre>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ol>
+
+  <h2 class="year">2023</h2>
+  <ol class="bibliography">
+    <li>
+      <div class="row">
+        <div class="col-sm-3 preview"><img class="preview z-depth-1" src="/assets/img/publication_preview/pgm_with_terminals.jpg"></div>
+        <div id="kariotakis2023probabilistic" class="col-sm-8">
+          <div class="title">Probabilistic asynchronous inference in wireless networks with spectral clustering</div>
+          <div class="author"> <em>E. Kariotakis</em> and <a href="https://www.telecom.tuc.gr/~aggelos/" target="_blank" rel="noopener noreferrer">A. Bletsas</a> </div>
+          <div class="periodical"> EUSIPCO, 2023 </div>
+          <div class="links"> 
+            <a class="bibtex btn btn-sm z-depth-0" role="button">Bib</a> 
+            <a href="https://ieeexplore.ieee.org/abstract/document/10290065" class="btn btn-sm z-depth-0" role="button" target="_blank" rel="noopener noreferrer">Paper</a> 
+          </div>
+          <div class="bibtex hidden">
+            <pre>@inproceedings{kariotakis2023probabilistic,
+            title={Probabilistic Asynchronous Inference in Wireless Networks with Spectral Clustering},
+            author={Kariotakis, Emmanouil and Bletsas, Aggelos},
+            booktitle={2023 31st European Signal Processing Conference (EUSIPCO)},
+            pages={1499--1503},
+            year={2023},
+            organization={IEEE}
+          }</pre>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ol>
+</div>
+
+
+
+            </article>
+        </div>
+    </div>
+    <!-- <footer class="fixed-bottom">
+        <div class="container mt-0"> © Copyright 2022 Emmanouil Kariotakis. Powered by <a href="https://jekyllrb.com/"
+                target="_blank" rel="noopener noreferrer">Jekyll</a> with <a
+                href="https://github.com/alshedivat/al-folio" target="_blank" rel="noopener noreferrer">al-folio</a>
+            theme. Hosted by <a href="https://pages.github.com/" target="_blank" rel="noopener noreferrer">GitHub
+                Pages</a>. Photos from <a href="https://unsplash.com" target="_blank"
+                rel="noopener noreferrer">Unsplash</a>. Last updated: August 04, 2022. </div>
+    </footer> -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha256-fgLAgv7fyCGopR/gBNq2iW3ZKIdqIcyshnUULC4vex8=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/js/mdb.min.js"
+        integrity="sha256-NdbiivsvWt7VYCt6hYNT3h/th9vSTL4EDWeGs5SN3DA=" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"
+        integrity="sha256-Nn1q/fx0H7SNLZMQ5Hw5JLaTRZp0yILA/FRexe19VdI=" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
+    <script defer src="/assets/js/masonry.js" type="text/javascript"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/medium-zoom@1.0.6/dist/medium-zoom.min.js"
+        integrity="sha256-EdPgYcPk/IIrw7FYeuJQexva49pVRZNmt3LculEr7zM=" crossorigin="anonymous"></script>
+    <script defer src="/assets/js/zoom.js"></script>
+    <script defer src="/assets/js/common.js"></script>
+    <script type="text/javascript">window.MathJax = { tex: { tags: "ams" } };</script>
+    <script defer type="text/javascript" id="MathJax-script"
+        src="https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/polyfill/3.30.1/polyfill.min.js"></script>
+</body>
+
+</html>
+
+
+<div id="particles-js"></div>
+
+<style>
+  #particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* Changed to 0 so it's on the same plane as content */
+    background-color: var(--global-bg-color);
+    pointer-events: all; /* Ensures it can 'see' the mouse */
+  }
+
+  /* Crucial: This allows the particles to react even if you're hovering over text */
+  #particles-js canvas {
+    display: block;
+    vertical-align: bottom;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1; 
+  }
+
+  /* Keep your content transparent so the background shows */
+  body, .container, .post, .page-content {
+    background: transparent !important;
+    position: relative;
+    z-index: 1; /* Content sits above the particles but allows 'pointer-events' to pass through if needed */
+  }
+
+</style>
+
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<script>
+  function getThemeColor() {
+    // This grabs the 'accent' blue color directly from your theme's CSS
+    return getComputedStyle(document.documentElement).getPropertyValue('--global-theme-color').trim() || "#116eee";
+  }
+
+  function initParticles() {
+    const themeColor = getThemeColor();
+    
+    particlesJS("particles-js", {
+      "particles": {
+        "number": { "value": 80, "density": { "enable": true, "value_area": 900 } },
+        "color": { "value": themeColor }, // Uses the theme's blue
+        "shape": { "type": "circle" },
+        "opacity": { "value": 0.35 },
+        "size": { "value": 2.5, "random": true },
+        "line_linked": {
+          "enable": true,
+          "distance": 150,
+          "color": "#888888", // Lines match the theme's blue
+          "opacity": 0.3,
+          "width": 1
+        },
+        "move": { "enable": true, "speed": 1.5}
+      },
+      "interactivity": {
+        "detect_on": "window",
+        "events": {
+          "onhover": { "enable": true, "mode": "grab" },
+          "onclick": { "enable": true, "mode": "push" }
+        },
+        "modes": {
+          "grab": { "distance": 200, "line_linked": { "opacity": 0.8 } }
+        }
+      },
+      "retina_detect": true
+    });
+  }
+
+  // 1. Initial Load
+  window.onload = initParticles;
+
+  // 2. Watch for Theme Toggle
+  // Al-folio uses a button with id 'light-toggle' to switch modes
+  const toggle = document.getElementById('light-toggle');
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      // We wait a tiny bit for the CSS variables to update, then restart particles
+      setTimeout(initParticles, 100); 
+    });
+  }
+</script>

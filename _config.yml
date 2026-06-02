@@ -1,0 +1,9 @@
+# Site settings
+title: Emmanouil Kariotakis
+url: "https://ekariotakis.github.io"
+baseurl: ""
+
+# Plugins
+plugins:
+  - jekyll-scholar
+  - jekyll-sitemap

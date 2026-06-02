@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>FairRARI: A Plug and Play Framework for Fairness-Aware PageRank</title>
+    <meta name="author" content="Emmanouil Kariotakis" />
+    <meta name="description" content="Project page for FairRARI: A Plug and Play Framework for Fairness-Aware PageRank (ICML 2026)." />
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha256-DF7Zhf293AJxJNTmh5zhoYYIMs2oXitRfBjY+9L//AY=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/css/mdb.min.css"
+        integrity="sha256-jpjYvU3G3N6nrrBwXJoVEYI/0zw8htfFnhT9ljN3JJw=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css"
+        integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.1/css/academicons.min.css"
+        integrity="sha256-i1+4qU2G2860dGGIOJscdC30s9beBXjFfzjWLjBRsBg=" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css"
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:100,300,400,500,700|Material+Icons">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jwarby/jekyll-pygments-themes@master/github.css" id="highlight_theme_light" />
+
+    <style>
+        /* Fallback Al-Folio Theme Variables for standalone operation */
+        :root {
+            /* --global-theme-color: #007bff; */
+            /* --global-theme-color: #4c72b0d9; */
+            --global-theme-color: #d65f5fff;
+            --global-bg-color: #ffffff;
+            --global-text-color: #333333;
+            --global-link-color: #007bff;
+            /* --global-link-color: #4c72b0d9; */
+            --global-red-color: #d65f5fff;
+        }
+        /* red: d65f5fff */
+        /* c44e52d9 */
+        /* blue: 4c72b0d9 */
+
+        /* INSERT YOUR NEW CODE HERE right before the closing tag */
+        .card-feature h4 {
+            color: var(--global-red-color) !important; /* Example: Changes them to Forest Green */
+        }
+        
+        /* 1. Change Author Names Color */
+        .authors a {
+            color: var(--global-red-color) !important;
+        }
+        .authors a:hover {
+            color: var(--global-red-color) !important;
+            opacity: 0.85;
+        }
+
+        /* 2. Change Conference Badge Background Color */
+        .venue.badge-primary {
+            background-color: var(--global-red-color) !important;
+        }
+        /* When someone hovers over the venue badge */
+        .venue.badge-primary:hover {
+            opacity: 0.82 !important; /* Lowers the opacity to 82%, making it look slightly faded/lighter */
+            cursor: pointer;          /* Optional: Changes the mouse cursor to a pointing hand */
+        }
+
+        /* 3. Change Paper & Code Buttons Background Color */
+        .project-links .btn-dark {
+            background-color: var(--global-red-color) !important;
+            border-color: var(--global-red-color) !important;
+        }
+
+        /* 4. Change BibTeX Outline Button Text and Border Color */
+        .project-links .btn-outline-dark {
+            color: var(--global-red-color) !important;
+            border-color: var(--global-red-color) !important;
+        }
+
+        /* 5. Change Inline Citation Link Color */
+        .citation-link {
+            color: var(--global-red-color) !important;
+            font-weight: bold;
+            transition: opacity 0.2s ease;
+        }
+        .citation-link:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        /* 6. Change References List Numbering Color */
+        #references ol li::marker {
+            color: var(--global-red-color);
+            font-weight: bold;
+        }
+
+        /* Custom Callout Style for TL;DR */
+        .tldr-callout {
+            background-color: color-mix(in srgb, var(--global-red-color) 5%, transparent) !important;
+            border-left: 4px solid var(--global-red-color) !important;
+            border-radius: 0 8px 8px 0;
+            padding: 20px 24px;
+            margin: 20px 0 40px 0;
+        }
+
+        .tldr-callout p {
+            margin-bottom: 0;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: #444;
+        }
+
+        /* Optional: Smooth hover effect for the buttons */
+        .project-links .btn:hover {
+            opacity: 0.85;
+        }
+        body {
+            font-family: "Roboto", sans-serif;
+            color: var(--global-text-color);
+        }
+
+        h1, h2, h3, h4 {
+            font-family: "Roboto Slab", serif;
+            font-weight: 400;
+            color: var(--global-red-color) !important;
+        }
+
+        .navbar {
+            box-shadow: none !important;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            background-color: rgba(255, 255, 255, 0.95) !important;
+        }
+
+        /* Project Buttons Styling */
+        .project-links .btn {
+            border-radius: 20px;
+            text-transform: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 8px 20px;
+            box-shadow: none !important;
+            margin: 5px;
+        }
+
+        /* Academic Paper Custom Layout Rules */
+        .section-title {
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            padding-bottom: 8px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.75rem;
+        }
+
+        .math-block {
+            /* background-color: rgba(0, 0, 0, 0.02); */
+            background-color: color-mix(in srgb, var(--global-red-color) 5%, transparent) !important;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .sub-caption {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        .main-caption {
+            font-size: 0.92rem;
+            color: color-mix(in srgb, var(--global-red-color) 4%, transparent);
+            line-height: 1.5;
+            margin-top: 15px;
+            background-color: color-mix(in srgb, var(--global-red-color) 5%, transparent) !important;
+            /* color: color-mix(in srgb, var(--global-red-color) 80%, #333333) !important; */
+            border-color: color-mix(in srgb, var(--global-red-color) 20%, transparent) !important;
+        }
+        /* .main-caption {*/
+            /* Light 5% red tint background instead of gray */
+            /* background-color: color-mix(in srgb, var(--global-red-color) 5%, transparent) !important; */
+            
+            /* Muted dark red text instead of gray text */
+            /* color: color-mix(in srgb, var(--global-red-color) 80%, #333333) !important; */
+            
+            /* 20% red border line instead of gray line */
+            /* border-color: color-mix(in srgb, var(--global-red-color) 20%, transparent) !important; */
+        /* } */ 
+
+        /* Also make the "Figure 1:" bold text match the red theme */
+        .main-caption strong {
+            color: var(--global-red-color);
+        }
+
+        .card-feature {
+            border-left: 4px solid var(--global-theme-color) !important;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1) !important;
+        }
+
+        .multi-group-box {
+            /* background-color: rgba(0, 123, 255, 0.04); */
+            /* background-color: color-mix(in srgb, var(--global-red-color) 4%, transparent); */
+            border-left: 4px solid var(--global-theme-color);
+            border-radius: 0 6px 6px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1) !important;
+        }
+
+        pre {
+            /* background-color: #f8f9fa; */
+            background-color: color-mix(in srgb, var(--global-red-color) 5%, transparent) !important;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 15px;
+            font-size: 0.88rem;
+        }
+
+        /* Particles Layer Handling (Preserving Layout Transparency) */
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background-color: var(--global-bg-color);
+            pointer-events: all;
+        }
+
+        #particles-js canvas {
+            display: block;
+            vertical-align: bottom;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1; 
+        }
+
+        body, .container, .post, .page-content, .card {
+            background: transparent !important;
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+
+<body class="fixed-top-nav">
+
+    <!-- <header>
+        <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top">
+            <div class="container"> 
+                <button class="navbar-toggler collapsed ml-auto" type="button"
+                    data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                    aria-label="Toggle navigation"> 
+                    <span class="sr-only">Toggle navigation</span> 
+                    <span class="icon-bar top-bar"></span> 
+                    <span class="icon-bar middle-bar"></span> 
+                    <span class="icon-bar bottom-bar"></span> 
+                </button>
+                <div class="collapse navbar-collapse text-right" id="navbarNav">
+                    <ul class="navbar-nav ml-auto flex-nowrap">
+                        <li class="nav-item"><a class="nav-link" href="#abstract">Abstract</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#qualitative">FairRARI vs. Post-Processing</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#quantitative">Quantitative Matrix</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#bibtex">BibTeX</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header> -->
+
+    <div class="container mt-5 pt-4">
+        <div class="post">
+            
+            <header class="post-header text-center my-4">
+                <h1 class="post-title" style="font-size: 2.5rem; font-weight: 500;">FairRARI: </h1>
+                <h1 class="post-title" style="font-size: 2rem; font-weight: 400;">A Plug and Play Framework for Fairness-Aware PageRank</h1>
+                <!-- <p class="desc text-muted" style="font-size: 1.3rem;">A Plug and Play Framework for Fairness-Aware PageRank</p> -->
+                
+                <div class="authors mt-3" style="font-size: 1.1rem;">
+                    <a href="https://ekariotakis.github.io/" target="_blank" class="font-weight-bold text-primary">Emmanouil (Manos) Kariotakis</a>, 
+                    <a href="https://aritrakonar.github.io/" target="_blank" class="font-weight-bold text-primary">Aritra Konar</a>
+                </div>
+                <div class="affiliation text-muted font-italic mt-1">
+                    Department of Electrical Engineering (ESAT-STADIUS), KU Leuven, Belgium
+                </div>
+                <div class="venue badge badge-primary mt-2 p-2" style="font-size: 0.9rem; font-weight: 400;">
+                    <a href="https://icml.cc/" target="_blank" style="color: white;">International Conference on Machine Learning (ICML) 2026</a>
+                </div>
+
+                <div class="project-links mt-4">
+                    <a href="https://arxiv.org/abs/2602.08589" target="_blank" class="btn btn-dark btn-sm"><i class="fas fa-file-pdf mr-2"></i>Paper</a>
+                    <a href="https://github.com/ekariotakis/FairRARI" target="_blank" class="btn btn-dark btn-sm"><i class="fab fa-github mr-2"></i>Code</a>
+                    <a href="#bibtex" class="btn btn-outline-dark btn-sm"><i class="fas fa-quote-right mr-2"></i>BibTeX</a>
+                </div>
+            </header>
+
+            <article>
+
+                <div id="tldr" class="my-4">
+                    <h2 class="section-title" style="margin-bottom: 10px;"><i class="fa-solid fa-bolt mr-2" style="font-size: 1.3rem;"></i>TL;DR</h2>
+                    <div class="tldr-callout">
+                        <p class="text-justify">
+                            While PageRank-style algorithms are essential for navigating large networks, they often marginalize specific subgroups through systemic bias.
+                            We introduce <strong>FairRARI</strong>, a "plug-and-play" framework that bakes fairness directly into the algorithmic process. 
+                            FairRARI provides rigorous mathematical guarantees for user-defined fairness goals (like equal group visibility) while maintaining the high efficiency and accuracy of the original PageRank.
+                        </p>
+                    </div>
+                </div>
+
+                
+                <div id="abstract" class="my-5">
+                    <h2 class="section-title">Abstract</h2>
+                    <p class="text-justify">
+                        PageRank (PR) is a fundamental algorithm in graph machine learning tasks. 
+                        Owing to the increasing importance of algorithmic fairness, we consider the problem of computing PR vectors subject to various group-fairness criteria based on sensitive attributes of the vertices. 
+                        At present, principled algorithms for this problem are lacking - some cannot guarantee that a target fairness level is achieved, while others do not feature optimality guarantees. 
+                        In order to overcome these shortcomings, we put forth a unified in-processing convex optimization framework, termed FairRARI, for tackling different group-fairness criteria in a "plug and play" fashion.
+                        Leveraging a variational formulation of PR, the framework computes fair PR vectors by solving a strongly convex optimization problem with fairness constraints, thereby ensuring that a target fairness level is achieved. 
+                        We further introduce three different fairness criteria which can be efficiently tackled using FairRARI to compute fair PR vectors with the same asymptotic time-complexity as the original PR algorithm. 
+                        Extensive experiments on real-world datasets showcase that FairRARI outperforms existing methods in terms of utility, while achieving the desired fairness levels across multiple vertex groups; thereby highlighting its effectiveness.
+                    </p>
+                </div>
+                
+                <div id="why-fairrari" class="my-5">
+                    <h2 class="section-title">Why FairRARI?</h2>
+                    <p class="text-justify" style="font-size: 1.05rem; line-height: 1.7;">
+                        <!-- <li><strong>Plug & Play:</strong> Switch between Demographic Parity (\(\phi\)-sum) or Rawlsian Justice (\(\alpha\)-min) by changing the constraint set.</li>
+                        <li><strong>Optimal Utility:</strong> Unlike heuristics, we minimize the true distance to the original PageRank objective.</li>
+                        <li><strong>Scalable:</strong> Per-iteration complexity is \(O(m+n)\), scaling easily to graphs with millions of edges (e.g., GitHub, Slashdot).</li>
+                        <li><strong>Multi-Group Support:</strong> Naturally handles more than two demographic subgroups without fairness violations.</li> -->
+                        <!-- <ul>
+                        <li><strong>A New Variational Optimization Framework:</strong><br> We reformulated PageRank as a strongly convex quadratic optimization problem, allowing us to build an in-processing "plug-and-play" framework with provable convergence to the optimal fair solution via simple fixed-point iterations. </li>
+                        <li><strong>Zero Scalability Loss:</strong><br> Thanks to linear-time projections, FairRARI handles multiple demographic groups while maintaining the same asymptotic complexity as the original PageRank algorithm. </li>
+                        <li><strong>Solving the "Zero-Score" Pitfall:</strong><br> Existing fairness criteria (and the post-processing baseline) often lead to degenerate "zero-score" allocations. We show how FairRARI inherently avoids this pitfall, and we introduce a new minimum-score criterion that ensures truly equitable distribution. </li>
+                        <li><strong>SOTA Empirical Results:</strong><br> On real-world graphs, FairRARI consistently outperforms existing methods in both score-based utility and induced ranking quality, while seamlessly handling various fairness criteria.</li>
+                        </ul></p> -->
+
+                    <div class="row mt-4">
+    
+    <div class="col-md-12 mb-3" id="framework">
+        <div class="card card-feature h-100 p-3">
+            <a href="#variational" class="text-decoration-none target-card-link">
+                <h4 class="h5 text-primary"><i class="fas fa-project-diagram mr-2"></i>A New Variational Optimization Framework</h4>
+                <p class="text-muted mb-0">We reformulated PageRank as a strongly convex quadratic optimization problem, allowing us to build an in-processing "plug-and-play" framework with provable convergence to the optimal fair solution via simple fixed-point iterations.</p>
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-12 mb-3" id="scalability">
+        <div class="card card-feature h-100 p-3">
+            <a href="#zero_scalability" class="text-decoration-none target-card-link">
+                <h4 class="h5 text-primary"><i class="fas fa-arrow-trend-up mr-2"></i>Zero Scalability Loss</h4>
+                <p class="text-muted mb-0">Thanks to linear-time projections, FairRARI handles multiple demographic groups while maintaining the same asymptotic complexity as the original PageRank algorithm.</p>
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-12 mb-3" id="pitfall">
+        <div class="card card-feature h-100 p-3">
+            <a href="#zero_pitfall" class="text-decoration-none target-card-link">
+                <h4 class="h5 text-primary"><i class="fa-brands fa-creative-commons-zero mr-2"></i>Solving the "Zero-Score" Pitfall</h4>
+                <p class="text-muted mb-0">We show how FairRARI inherently avoids this pitfall, and we introduce a new minimum-score criterion that ensures truly equitable distribution.</p>
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-12 mb-3" id="results">
+        <div class="card card-feature h-100 p-3">
+            <a href="#empirical_results" class="text-decoration-none target-card-link">
+                <h4 class="h5 text-primary"><i class="fas fa-ranking-star mr-2"></i>SOTA Empirical Results</h4>
+                <p class="text-muted mb-0">On real-world graphs, FairRARI consistently outperforms existing methods in both score-based utility and induced ranking quality, while seamlessly handling various fairness criteria.</p>
+            </a>
+        </div>
+    </div>
+
+</div>
+                    <!-- </ul> -->
+                </div>
+
+                <div id="variational" class="my-5">
+                    <h2 class="section-title">A New Variational Optimization Framework</h2>
+                    <p>
+                        Consider a (un)directed graph \(\mathcal{G} = (\mathcal{V}, \mathcal{E})\), with \(n:=|\mathcal{V}|\) vertices and \(m:=|\mathcal{E}|\) edges that is (strongly) connected.
+                        The PageRank (PR) algorithm models the action of a random walker visiting vertices in \(\mathcal{G}\) in accordance with a \(n \times n\) probability transition matrix \(\mathbf{P}\), where each entry \(P_{ij}\) denotes the probability of transitioning from vertex \(j\) to vertex \(i\).
+                        Let \(\mathbf{A}\) and \(\mathbf{D}\in\mathbb{R}^{n\times n}\) denote the adjacency and diagonal degree matrix of \(\mathcal{G}\), respectively - for directed graphs, \(\mathbf{D}\) denotes the out-degree matrix. 
+                        The transition matrix \(\mathbf{P}\) is formed by normalizing each column of \(\mathbf{A}\) to sum to one, \(\mathbf{P}:=\mathbf{A}\mathbf{D}^{-1}\).
+                        Let \(\boldsymbol{\Pi} := \mathrm{diag}(\boldsymbol{\pi})\), where \(\boldsymbol{\pi}\) is the stationary distribution of \(\mathbf{P}\). 
+                        For an undirected \(\mathcal{G}\) that is connected and non-bipartite, this reduces to \(\boldsymbol{\Pi} = \frac{1}{2m}\mathbf{D}\).
+                        PR modifies the standard random walk on \(\mathcal{G}\) by utilizing restarts, specified by a teleportation probability \(\gamma\)
+                        and a teleportation vector \(\mathbf{v}\). The output of the algorithm is the PR vector \(\boldsymbol{\pi}_{\mathrm{o}}\).
+                        Since we use \(\mathbf{x}\) as a network centrality measure, we set \(\mathbf{v}\) to be the uniform vector.
+                    </p>
+                    <p>
+                        The original PR vector \(\mathbf{p}_{\mathrm{o}}\) can be computed by applying the following fixed-point iterations <a href="#ref-gleich2015pagerank" class="citation-link">[1]</a>
+                    <!-- <div class="math-block text-center"> -->
+                        $$ \mathbf{x}^{(t+1)} = (1-\gamma)\mathbf{P}\mathbf{x}^{(t)} + \gamma \mathbf{v} $$
+                    <!-- </div> -->
+                        where \(\mathbf{x}^{(0)}=\mathbf{v}\) or \(\mathbf{x}^{(0)}=0\).
+                    </p>
+                    <p>
+                        FairRARI transforms the PageRank problem into a constrained (strongly, for undirected graphs) <strong> convex quadratic optimization problem</strong>. We minimize the following objective over a closed convex set \(\mathcal{X}\):
+                    </p>
+                    <div class="math-block text-center">
+                        $$ \min_{\mathbf{x} \in \mathcal{X}} \left\{ f(\mathbf{x}) := \frac{1}{2}(1-\gamma)\underbrace{\mathbf{x}^\top\boldsymbol{\Pi}^{-1}\mathbf{L}_{\mathrm{rw}}\mathbf{x}}_{\substack{\text{smoothness-promoting term}}} + \frac{1}{2} \gamma \underbrace{\lVert \boldsymbol{\Pi}^{-\frac{1}{2}} (\mathbf{x}-\mathbf{v}) \rVert^2}_{ \text{proximity to teleportation }\mathbf{v} } \right\} $$                 
+                        <!-- $$ \gamma : \text{controls the trade-off}$$  -->
+                    </div>
+                    <p>
+                        <strong>The minimizer of the above problem equals the fixed point of the following iterations.</strong> This is the basis for our algorithm <strong>FairRARI</strong>:
+                    </p>
+                    <div class="math-block text-center">
+                        $$\mathbf{y}^{(t+1)} =(1-\gamma)\mathbf{P}\mathbf{x}^{(t)} + \gamma\mathbf{v}, \quad \mathbf{x}^{(t+1)} = \mathrm{Proj}_{\mathcal{X}}(\mathbf{y}^{(t+1)})$$
+                    </div>
+                    <p>The above iterations converge at a geometric rate to a <strong>unique fixed point</strong>.</p>
+                </div>
+
+<div id="zero_scalability" class="my-5">
+    <h2 class="section-title">Zero Scalability Loss</h2>
+
+    <!-- Subsection for Criteria Projections -->
+    <div class="multi-group-box rounded p-2 m-0 mt-4 pl-3" style="border-left-width: 3px !important; border-color: var(--global-red-color) !important;">
+        <h3 class="h5 font-weight-bold mb-3" style="font-size: 1.2rem; color: var(--global-red-color);"><i class="fas fa-scale-balanced mr-2"></i>Proposed Fairness Criteria</h3>
+        <p class="text-justify mb-3" style="font-size: 0.98rem;">
+            The primary computational challenge of FairRARI lies in the projection step \(\mathrm{Proj}_{\mathcal{X}}(\cdot)\), 
+            which highly depends on the structure of the constraint set \(\mathcal{X}\) that encodes the fairness criteria.
+            We introduce three different fairness criteria for which the projection can be computed in linear time. 
+            Consequently, FairRARI computes fair PR vectors with the same asymptotic time complexity as the original PR algorithm.
+        </p>
+        
+        <ul class="list-unstyled pl-0" style="font-size: .95rem; line-height: 1.6;">
+            <li class="mb-2">
+                <strong style="color: var(--global-red-color);">1. \(\boldsymbol{\phi}\)-sum fairness:</strong> 
+                Ensures that the collective PageRank mass of each vertex group \(\mathcal{S}_k\) strictly equals a target fraction \(\phi_k\). 
+                By tuning \(\phi_k\), users can implement group parity policies - such as true demographic parity by setting \(\phi_k = n_k/n\) <a href="#ref-dwork2012fairness" class="citation-link">[3]</a>- 
+                generalized seamlessly for any arbitrary number of groups (\(K \geq 2\)).
+            </li>
+            <li class="mb-2">
+                <strong style="color: var(--global-red-color);">2. \(\boldsymbol{\alpha}\)-min fairness:</strong> 
+                Motivated by the Rawlsian principle of social justice <a href="#ref-rawls2020theory" class="citation-link">[4]</a>, this criterion regulates individual vertex scores rather than aggregate mass. 
+                It guarantees that every single vertex within designated protected subsets \(\mathcal{A}_k \subseteq \mathcal{S}_k\) is allocated a strict minimum baseline PageRank score of \(\alpha_k \geq 0\), 
+                preventing vertices from being completely marginalized or dropped to zero.            
+            </li>
+            <li class="mb-0">
+                <strong style="color: var(--global-red-color);">3. \(\boldsymbol{\phi}\)-sum + \(\boldsymbol{\alpha}\)-min fairness:</strong> 
+                The most general formulation, providing fine-grained control by simultaneously combining the above criteria. 
+                It constrains the total PageRank scores of each group \(\mathcal{S}_k\) to sum exactly to \(\phi_k\), 
+                while strictly ensuring that no individual vertex within the target subgroup \(\mathcal{A}_k\) falls below the individual threshold \(\alpha_k\).            
+            </li>
+        </ul>
+    </div>
+
+
+    <p class="text-justify">
+        <br>
+        The complexity of the first step of FairRARI iterations is \(O(m+n)\). 
+        Additionally, for the second part, the worst-case complexity of the projections across all considered constraints is strictly \(O(n)\), resulting in an overall per-iteration complexity of \(O(m+n)\).
+        Hence, the final complexity figure after \(T\) iterations is \(O((m+n)\cdot T)\), where \(T = O\left(\frac{\log (1/\epsilon)}{\log (1/(1-\gamma))}\right)\). 
+        Hence, <b>FairRARI exhibits the same asymptotic time complexity as the standard (non-fair) PR algorithm.</b>
+    </p>
+</div>
+
+                <div id="zero_pitfall" class="my-5">
+                    <!-- <h2 class="section-title">FairRARI vs. Post-Processing</h2> -->
+                    <h2 class="section-title">Solving the "Zero-Score" Pitfall</h2>
+                    <p class="mb-4">
+                        Post-processing modifies the original PageRank vector through a direct, graph-agnostic correction determined solely by the active fairness constraints.
+                        In contrast, the inherently in-processing nature of FairRARI corrects the original PageRank vector via a graph diffusion term in order to arrive at the solution.
+                        As a result, it avoids enforcing fairness at the cost of assigning zero PageRank scores to certain vertices, as opposed to the post-processing baseline. 
+                        <!-- This is particularly evident in the case of \(\phi\)-fairness, where the post-processing method zeroes out \(75\%\) of the minority group vertices to achieve the target fairness level, while FairRARI maintains a smooth distribution of scores across all vertices, preserving utility without sacrificing fairness. -->
+                    </p>
+                    
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-3">
+                            <img src="polbooks_network_OPR_rotated.svg" alt="Original PageRank" class="img-fluid rounded z-depth-1">
+                            <p class="sub-caption">(a) Original PageRank</p>
+                        </div>
+                        <div class="col-md-4 text-center mb-3">
+                            <img src="polbooks_network_0.9_postproc_rotated.svg" alt="Post-Processing" class="img-fluid rounded z-depth-1">
+                            <p class="sub-caption">(b) Post-Processing</p>
+                        </div>
+                        <div class="col-md-4 text-center mb-3">
+                            <img src="polbooks_network_0.9_FairRARI_rotated.svg" alt="FairRARI" class="img-fluid rounded z-depth-1">
+                            <p class="sub-caption">(c) FairRARI (Ours)</p>
+                        </div>
+                    </div>
+                    
+                    <p class="main-caption text-muted bg-light p-3 rounded mt-2">
+                        <strong>Figure 1.</strong> Evaluation over \(\phi\)-fairness with two vertex groups (red/blue) on the <b>PolBooks</b> dataset. 
+                        Vertex size is proportional to the PageRank score produced by each method.
+                        Black circles reflect vertices completely dropped to absolute zero values. 
+                        The original PageRank vector (a) assigns \(\phi^\text{red}_\mathrm{o}\! =\! 0.47\) of the total PR mass to the red group. 
+                        The target for the fair PR vectors is \(\phi^\text{red}\! =\! 0.9\) of total mass for the red group.  While both fair PR vectors in (b) and (c) attain this target, \(37/49 \approx 75\%\) of blue vertices in (b) are set to zero, while \(0\%\) of the blue vertices suffer such an undesirable outcome for FairRARI (c).
+                    </p>
+                </div>
+
+                
+
+                <div id="empirical_results" class="my-5">
+                    <h2 class="section-title">Empirical Results</h2>
+                    <p class="mb-4">
+                        Experiments on real-world datasets demonstrate that FairRARI consistently outperforms existing methods 
+                        <a href="#ref-tsioutsiouliklis2021fairness" class="citation-link">[2]</a> in terms of utility, while achieving the desired fairness levels across multiple vertex groups; thereby highlighting its effectiveness.
+                    </p>
+
+                    <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card p-3 h-100">
+                            <h3 class="h5 text-center mb-3">Total Variation Distance</h3>
+                            
+                            <div class="d-flex justify-content-between align-items-bottom text-center my-2 flex-wrap">
+                                
+                                <div class="w-100 text-center mb-3 mx-auto" style="flex: 0 0 100%; max-width: 100%;">
+                                    <img src="figures/legend_TV_KL.svg" alt="Plot Legend" class="img-fluid rounded mx-auto d-block" style="max-height: 240px;">
+                                </div>
+
+                                <div class="w-100"></div>
+                                
+                                <div class="px-1 mb-3" style="flex: 1 0 45%; max-width: 50%;">
+                                    <img src="figures/deezer_phi_vs_TV_.svg" alt="Deezer TV Distance" class="img-fluid mx-auto d-block rounded">
+                                    <p class="mt-2 mb-0">(a) Deezer</p>
+                                </div>
+                                
+                                <div class="px-1 mb-3" style="flex: 1 0 45%; max-width: 50%;">
+                                    <img src="figures/github_phi_vs_TV_.svg" alt="GitHub TV Distance" class="img-fluid mx-auto d-block rounded">
+                                    <p class="mt-2 mb-0">(b) GitHub</p>
+                                </div>
+                                
+                                <div class="w-100"></div>
+                                
+                                <div class="px-1 mx-auto" style="flex: 1 0 45%; max-width: 50%;">
+                                    <img src="figures/dblp_gender_phi_vs_TV_.svg" alt="DBLP TV Distance" class="img-fluid mx-auto d-block rounded">
+                                    <p class="mt-2 mb-0">(c) DBLP-G</p>
+                                </div>
+                                
+                                <div class="px-1 mx-auto" style="flex: 1 0 45%; max-width: 50%;">
+                                    <img src="figures/twitchDE_phi_vs_TV_.svg" alt="Twitch TV Distance" class="img-fluid mx-auto d-block rounded">
+                                    <p class="mt-2 mb-0">(d) TwitchDE-2</p>
+                                </div>
+                                
+                            </div>
+
+                            <!-- <p class="small text-muted mt-3 pt-2 border-top mb-0 text-justify"> -->
+                            <p class="main-caption text-muted bg-light p-3 rounded mt-2">
+                                <strong>Figure 2.</strong>
+                                <strong>Total Variation</strong> (Lower is Better) <br>
+                                For various values of \(\phi\), FairRARI consistently yields a significantly lower TV, very close to the lower bound, indicating that the resulting fair PR distribution is much closer to that of the original PR. 
+                                Notably, when \(\phi\) is equal to \(\phi_\mathrm{o}\) (vertical dotted lines), FairRARI attains zero TV, in contrast to the prior methods, which incur a much higher cost, typically around \(0.5\). 
+                                This underscores the effectiveness of our approach, since when the original PR solution already satisfies the desired fairness level, it is naturally the optimal solution. 
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card p-3 h-100">
+                            <h3 class="h5 text-center mb-3">Kendall Tau Rank Correlation</h3>
+                            
+                            <div class="d-flex justify-content-between align-items-bottom text-center my-2 flex-wrap">
+                                <div class="w-100 text-center mb-3 mx-auto" style="flex: 0 0 100%; max-width: 100%;">
+                                    <img src="figures/legend_TV_KL.svg" alt="Plot Legend" class="img-fluid rounded mx-auto d-block" style="max-height: 240px;">
+                                </div>
+
+                                <div class="w-100"></div>
+
+                                <div class="px-1 mb-3" style="flex: 1 0 45%; max-width: 50%;">
+                                    <img src="figures/deezer_phi_vs_kendall_.svg" alt="Deezer TV Distance" class="img-fluid mx-auto d-block rounded">
+                                    <p class="mt-2 mb-0">(a) Deezer</p>
+                                </div>
+                                
+                                <div class="px-1 mb-3" style="flex: 1 0 45%; max-width: 50%;">
+                                    <img src="figures/github_phi_vs_kendall_.svg" alt="GitHub TV Distance" class="img-fluid mx-auto d-block rounded">
+                                    <p class="mt-2 mb-0">(b) GitHub</p>
+                                </div>
+                                
+                                <div class="w-100"></div>
+                                
+                                <div class="px-1 mx-auto" style="flex: 1 0 45%; max-width: 50%;">
+                                    <img src="figures/dblp_gender_phi_vs_kendall_.svg" alt="DBLP TV Distance" class="img-fluid mx-auto d-block rounded">
+                                    <p class="mt-2 mb-0">(c) DBLP-G</p>
+                                </div>
+                                
+                                <div class="px-1 mx-auto" style="flex: 1 0 45%; max-width: 50%;">
+                                    <img src="figures/twitchDE_phi_vs_kendall_.svg" alt="Twitch TV Distance" class="img-fluid mx-auto d-block rounded">
+                                    <p class="mt-2 mb-0">(d) TwitchDE-2</p>
+                                </div>
+                                
+                            </div>
+
+                            <!-- <p class="small text-muted mt-3 pt-2 border-top mb-0 text-justify"> -->
+                            <p class="main-caption text-muted bg-light p-3 rounded mt-2">
+                                <strong>Figure 3.</strong>
+                                <strong>Kendall Tau</strong> (Higher is Better) <br>
+                                For various values of \(\phi\), FairRARI consistently yields a significantly higher Kendall Tau values, very close to the lower bound, indicating that the resulting fair PR ranking is much closer to that of the original PR. 
+                                This figure shows the agreement between the rankings induced by the fair PR vectors \(\mathbf{p}_{\mathrm{F}}\) and the original PR vector \(\mathbf{p}_{\mathrm{o}}\), using the Kendall Tau rank correlation coefficient. 
+                                Across most fairness levels and datasets, FairRARI achieves the highest Kendall Tau scores, significantly outperforming prior methods. 
+                            </p>
+                        </div>
+                    </div>
+
+
+                    <div class="col-12 mb-4">
+                        <div class="multi-group-box rounded p-4 m-0"> 
+                        <h4 class="h5 font-weight-bold"><i class="fas fa-users mr-2"></i>Multiple Groups (\(K > 2\))</h4>
+                            <p class="text-justify mb-3">
+                                Unlike prior methods that handle only binary vertex attributes, 
+                                FairRARI effectively addresses the multi-group scenario by satisfying the fairness constraints while achieving TV values that are close to the post-processing solution.
+                                Notably, FairRARI achieves lower TV on the Twitch datasets even in the more challenging setting with 4 groups, compared to prior methods on the easier 2-group setting. 
+                                As shown in the following Figures, the TV for the TwitchDE dataset with 4 groups is consistently lower than that of the prior methods on TwitchDE-2 with 2 groups.
+                            </p>
+                            <div class="text-center">
+                                <img src="figures/legend.svg" alt="Global Legend" class="img-fluid rounded mb-2" style="max-height: 20px;">
+                                <img src="figures/twitch_phi_vs_TV_1proj_3_splitted_.svg" alt="Twitch Multi-Group Evaluation" class="img-fluid rounded" style="max-height: 240px;">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-12 mb-4">
+                    <div class="multi-group-box rounded p-4 my-4">
+                        <h4 class="h5 font-weight-bold"><i class="fas fa-plus-minus mr-2"></i>\(\boldsymbol{\phi}\)-sum + \(\boldsymbol{\alpha}\)-min-fairness</h4>
+                        <p class="text-justify mb-3">
+                            Enforcing \(\boldsymbol{\phi}\)-sum-fairness can result in some vertices receiving zero scores. 
+                            This observation motivates the need of this more stringent criterion, which additionally enforces a minimum score threshold for certain vertices.
+                            In the following Figure, we present the TV achieved by FairRARI and compare it against the lower bound obtained via the post-processing method. 
+                            Since this is a more stringent fairness constraint, the bound remains far from zero, but FairRARI achieves TV values that are close to it. 
+                            Notably, there are cases where the TV achieved by FairRARI, under the combined \(\boldsymbol{\phi}\)-sum + \(\boldsymbol{\alpha}\)-min-fairness constraints, 
+                            is lower than that of prior methods that enforce the simpler \(\boldsymbol{\phi}\)-sum-fairness constraint, such as on the TwitchDE-2 dataset. 
+                        </p>
+                        <div class="d-flex justify-content-between align-items-end text-center my-2 flex-wrap">
+                            <div class="px-1 mb-3" style="flex: 1 0 45%; max-width: 40%;">
+                                <img src="figures/github_phi_vs_TV_1proj_.svg" alt="GitHub TV Distance" class="img-fluid mx-auto d-block rounded">
+                                <p class="mt-2 mb-0">(a) GitHub</p>
+                            </div>
+                            
+                            <div class="px-1 mb-3" style="flex: 1 0 45%; max-width: 40%;">
+                                <img src="figures/twitchDE_phi_vs_TV_1proj_.svg" alt="TwitchDE TV Distance" class="img-fluid mx-auto d-block rounded">
+                                <p class="mt-2 mb-0">(b) TwitchDE-2</p>
+                            </div>                                
+                            
+                            <div class="px-1 mb-3 align-self-center" style="flex: 1 0 45%; max-width: 20%;">
+                                <img src="figures/legend_min.svg" alt="Plot Legend" class="img-fluid rounded mx-auto d-block" style="max-height: 240px;">
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+                <div id="references" class="my-5">
+                    <h2 class="section-title">References</h2>
+                    <ol class="text-justify" style="font-size: 1rem; line-height: 1.6; padding-left: 20px;">
+                        <li id="ref-gleich2015pagerank" class="mb-2">
+                            David F. Gleich. 
+                            "PageRank Beyond the Web." 
+                            <span class="font-italic">SIAM Review</span> 57, no. 3 (2015): 321-378. 
+                            <a href="https://doi.org/10.1137/140976649" target="_blank" class="ml-1 text-muted" style="font-size: 0.85rem;"><i class="fas fa-external-link-alt"></i> CrossRef</a>
+                        </li>
+                        <li id="ref-tsioutsiouliklis2021fairness" class="mb-2">
+                            Tsioutsiouliklis, S., Pitoura, E., Tsaparas, P., Kleftakis, I., and Mamoulis, N. 
+                            "Fairness-aware pagerank." 
+                            <span class="font-italic">In Proceedings of the ACM Web Conference</span> pp. 3815-3826, 2021. 
+                            <a href="https://dl.acm.org/doi/10.1145/3442381.3450065" target="_blank" class="ml-1 text-muted" style="font-size: 0.85rem;"><i class="fas fa-external-link-alt"></i> CrossRef</a>
+                        </li>
+                        <li id="ref-dwork2012fairness" class="mb-2">
+                            Dwork, C., Hardt, M., Pitassi, T., Reingold, O., and Zemel, R.
+                            "Fairness through awareness." 
+                            <span class="font-italic">In Proceedings of the 3rd Innovations in Theoretical Computer Science Conference</span> pp. 214-226, 2012.
+                            <a href="https://dl.acm.org/doi/10.1145/2090236.2090255" target="_blank" class="ml-1 text-muted" style="font-size: 0.85rem;"><i class="fas fa-external-link-alt"></i> CrossRef</a>
+                        </li>
+                        <li id="ref-rawls2020theory" class="mb-2">
+                            Rawls, J.
+                            "A theory of justice." 
+                            <span class="font-italic">In A theory of justice.</span> Harvard University Press, 2020.
+                            <a href="https://www.jstor.org/stable/j.ctvjf9z6v" target="_blank" class="ml-1 text-muted" style="font-size: 0.85rem;"><i class="fas fa-external-link-alt"></i> CrossRef</a>
+                        </li>
+                    </ol>
+                </div>
+
+
+                <div id="bibtex" class="my-5">
+                    <h2 class="section-title">BibTeX</h2>
+                    <pre><code>@inproceedings{kariotakis2026fairrari,
+                    title={FairRARI: A Plug and Play Framework for Fairness-Aware PageRank},
+                    author={Kariotakis, Emmanouil and Konar, Aritra},
+                    booktitle={International Conference on Machine Learning},
+                    year={2026},
+                    organization={PMLR}
+                    }</code></pre>
+                </div>
+
+            </article>
+        </div>
+    </div>
+
+    <footer class="text-center py-4 text-muted border-top mt-5" style="font-size: 0.9rem;">
+        <div class="container">
+            &copy; 2026 Emmanouil Kariotakis.
+        </div>
+    </footer>
+
+    <div id="particles-js"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha256-fgLAgv7fyCGopR/gBNq2iW3ZKIdqIcyshnUULC4vex8=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/js/mdb.min.js"
+        integrity="sha256-NdbiivsvWt7VYCt6hYNT3h/th9vSTL4EDWeGs5SN3DA=" crossorigin="anonymous"></script>
+    
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <script type="text/javascript">window.MathJax = { tex: { tags: "ams" } };</script>
+    <script defer type="text/javascript" id="MathJax-script"
+        src="https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/polyfill/3.30.1/polyfill.min.js"></script>
+
+    <script>
+        function getThemeColor() {
+            // return "#007bff"; // Dynamic tracking anchor fallback to core theme asset node accent color
+            return "#d65f5f"; // Dynamic tracking anchor fallback to core theme asset node accent color
+        }
+
+        function initParticles() {
+            const themeColor = getThemeColor();
+            
+            particlesJS("particles-js", {
+                "particles": {
+                    "number": { "value": 70, "density": { "enable": true, "value_area": 900 } },
+                    "color": { "value": themeColor },
+                    "shape": { "type": "circle" },
+                    "opacity": { "value": 0.35 },
+                    "size": { "value": 2.5, "random": true },
+                    "line_linked": {
+                        "enable": true,
+                        "distance": 160,
+                        "color": "#aaaaaa",
+                        "opacity": 0.3,
+                        "width": 1
+                    },
+                    "move": { "enable": true, "speed": 1.5 }
+                },
+                "interactivity": {
+                    "detect_on": "window",
+                    "events": {
+                        "onhover": { "enable": true, "mode": "grab" },
+                        "onclick": { "enable": true, "mode": "push" }
+                    },
+                    "modes": {
+                        "grab": { "distance": 200, "line_linked": { "opacity": 0.8 } }
+                    }
+                },
+                "retina_detect": true
+            });
+        }
+
+        window.onload = initParticles;
+    </script>
+</body>
+</html>
