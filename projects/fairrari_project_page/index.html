@@ -327,7 +327,7 @@
                         <li><strong>Multi-Group Support:</strong> Naturally handles more than two demographic subgroups without fairness violations.</li> -->
                         <!-- <ul>
                         <li><strong>A New Variational Optimization Framework:</strong><br> We reformulated PageRank as a strongly convex quadratic optimization problem, allowing us to build an in-processing "plug-and-play" framework with provable convergence to the optimal fair solution via simple fixed-point iterations. </li>
-                        <li><strong>Zero Scalability Loss:</strong><br> Thanks to linear-time projections, FairRARI handles multiple demographic groups while maintaining the same asymptotic complexity as the original PageRank algorithm. </li>
+                        <li><strong>Great Scalability:</strong><br> Thanks to linear-time projections, FairRARI handles multiple demographic groups while maintaining the same asymptotic complexity as the original PageRank algorithm. </li>
                         <li><strong>Solving the "Zero-Score" Pitfall:</strong><br> Existing fairness criteria (and the post-processing baseline) often lead to degenerate "zero-score" allocations. We show how FairRARI inherently avoids this pitfall, and we introduce a new minimum-score criterion that ensures truly equitable distribution. </li>
                         <li><strong>SOTA Empirical Results:</strong><br> On real-world graphs, FairRARI consistently outperforms existing methods in both score-based utility and induced ranking quality, while seamlessly handling various fairness criteria.</li>
                         </ul></p> -->
@@ -345,9 +345,9 @@
 
     <div class="col-md-12 mb-3" id="scalability">
         <div class="card card-feature h-100 p-3">
-            <a href="#zero_scalability" class="text-decoration-none target-card-link">
-                <h4 class="h5 text-primary"><i class="fas fa-arrow-trend-up mr-2"></i>Zero Scalability Loss</h4>
-                <p class="text-muted mb-0">Thanks to linear-time projections, FairRARI handles multiple demographic groups while maintaining the same asymptotic complexity as the original PageRank algorithm.</p>
+            <a href="#great_scalability" class="text-decoration-none target-card-link">
+                <h4 class="h5 text-primary"><i class="fas fa-arrow-trend-up mr-2"></i>Great Scalability</h4>
+                <p class="text-muted mb-0">Thanks to linear-time projections, FairRARI handles multiple demographic groups while maintaining the same asymptotic time complexity as the original PageRank algorithm.</p>
             </a>
         </div>
     </div>
@@ -410,8 +410,8 @@
                     <p>The above iterations converge at a geometric rate to a <strong>unique fixed point</strong>.</p>
                 </div>
 
-<div id="zero_scalability" class="my-5">
-    <h2 class="section-title">Zero Scalability Loss</h2>
+<div id="great_scalability" class="my-5">
+    <h2 class="section-title">Great Scalability</h2>
 
     <!-- Subsection for Criteria Projections -->
     <div class="multi-group-box rounded p-2 m-0 mt-4 pl-3" style="border-left-width: 3px !important; border-color: var(--global-red-color) !important;">
