@@ -381,6 +381,7 @@
                         The PageRank (PR) algorithm models the action of a random walker visiting vertices in \(\mathcal{G}\) in accordance with a \(n \times n\) probability transition matrix \(\mathbf{P}\), where each entry \(P_{ij}\) denotes the probability of transitioning from vertex \(j\) to vertex \(i\).
                         Let \(\mathbf{A}\) and \(\mathbf{D}\in\mathbb{R}^{n\times n}\) denote the adjacency and diagonal degree matrix of \(\mathcal{G}\), respectively - for directed graphs, \(\mathbf{D}\) denotes the out-degree matrix. 
                         The transition matrix \(\mathbf{P}\) is formed by normalizing each column of \(\mathbf{A}\) to sum to one, \(\mathbf{P}:=\mathbf{A}\mathbf{D}^{-1}\).
+                        The random walk Laplacian of \(\mathcal{G}\) is defined as \(\mathbf{L}_{\mathrm{rw}} := \mathbf{I} - \mathbf{P}\).
                         Let \(\boldsymbol{\Pi} := \mathrm{diag}(\boldsymbol{\pi})\), where \(\boldsymbol{\pi}\) is the stationary distribution of \(\mathbf{P}\). 
                         For an undirected \(\mathcal{G}\) that is connected and non-bipartite, this reduces to \(\boldsymbol{\Pi} = \frac{1}{2m}\mathbf{D}\).
                         PR modifies the standard random walk on \(\mathcal{G}\) by utilizing restarts, specified by a teleportation probability \(\gamma\)
