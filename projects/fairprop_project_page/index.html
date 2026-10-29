@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>FairProp: Fair Node Representation Learning via Differentiable Propagation Layers</title>
+    <meta name="author" content="Emmanouil Kariotakis" />
+    <meta name="description" content="Project page for FairProp: Fair Node Representation Learning via Differentiable Propagation Layers. Fair node classification, link prediction and node regression." />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha256-DF7Zhf293AJxJNTmh5zhoYYIMs2oXitRfBjY+9L//AY=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/css/mdb.min.css"
+        integrity="sha256-jpjYvU3G3N6nrrBwXJoVEYI/0zw8htfFnhT9ljN3JJw=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" type="text/css"
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:100,300,400,500,700|Material+Icons">
+
+    <style>
+        /* Same theme structure as the FairRARI project page. Change the accent in one place: --global-theme-color. */
+        :root {
+            --global-theme-color: #9C6412;
+            --global-bg-color: #ffffff;
+            --global-text-color: #333333;
+            --global-link-color: #007bff;
+
+            /* figure tokens (used by the interactive figures) */
+            --g0: #D21F3C;      /* minority group */
+            --g1: #1F4E9A;      /* majority group */
+            --fair: #9C6412;    /* FairProp, same as the theme color */
+            --ink: #333333;
+            --muted: #6c757d;
+            --rule: #dee2e6;
+            --surface: #ffffff;
+            --paper: #f7f8fa;
+            --sunk: #f1f3f5;
+            --display: "Roboto Slab", Georgia, serif;
+            --body: "Roboto", "Helvetica Neue", Arial, sans-serif;
+            --mono: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+
+        body { font-family: "Roboto", sans-serif; color: var(--global-text-color); }
+        h1, h2, h3, h4 { font-family: "Roboto Slab", serif; font-weight: 400; color: var(--global-theme-color) !important; }
+        .g0 { color: var(--g0); } .g1 { color: var(--g1); } .fp { color: var(--fair); }
+
+        /* header, as on the FairRARI page */
+        .back-link { font-size: .9rem; color: #6c757d; }
+        .back-link:hover { color: var(--global-theme-color); text-decoration: none; }
+        .authors a { color: var(--global-theme-color) !important; }
+        .authors a:hover { opacity: .85; }
+        .venue.badge-primary { background-color: var(--global-theme-color) !important; }
+        .venue.badge-primary:hover { opacity: .82 !important; }
+        .project-links .btn { border-radius: 20px; text-transform: none; font-size: .95rem; font-weight: 500; padding: 8px 20px; box-shadow: none !important; margin: 5px; }
+        .project-links .btn-dark { background-color: var(--global-theme-color) !important; border-color: var(--global-theme-color) !important; }
+        .project-links .btn-outline-dark { color: var(--global-theme-color) !important; border-color: var(--global-theme-color) !important; }
+        .project-links .btn:hover { opacity: .85; }
+
+        .tldr-callout { background-color: color-mix(in srgb, var(--global-theme-color) 5%, transparent) !important; border-left: 4px solid var(--global-theme-color) !important; border-radius: 0 8px 8px 0; padding: 20px 24px; margin: 20px 0 40px 0; }
+        .tldr-callout p { margin-bottom: 0; font-size: 1.05rem; line-height: 1.7; color: #444; }
+        .section-title { border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 8px; margin-top: 40px; margin-bottom: 20px; font-size: 1.75rem; }
+        .section-title i { font-size: 1.3rem; }
+        .card-feature { border-left: 4px solid var(--global-theme-color) !important; box-shadow: 0 2px 5px rgba(0,0,0,0.1) !important; }
+        .card-feature h4 { color: var(--global-theme-color) !important; }
+        .card-feature a:hover h4 { text-decoration: underline; }
+        .math-block { background-color: color-mix(in srgb, var(--global-theme-color) 5%, transparent) !important; border-radius: 6px; padding: 15px; margin: 20px 0; overflow-x: auto; }
+        .main-caption { font-size: .92rem; color: #555; line-height: 1.5; margin-top: 15px; padding: 10px 14px; border-radius: 6px; background-color: color-mix(in srgb, var(--global-theme-color) 5%, transparent); }
+        .main-caption strong { color: var(--global-theme-color); }
+        pre { background-color: color-mix(in srgb, var(--global-theme-color) 5%, transparent) !important; border: 1px solid #e9ecef; border-radius: 6px; padding: 15px; font-size: .88rem; }
+        .lead-p { font-size: 1.05rem; line-height: 1.7; }
+
+        /* shared pieces for the interactive figures */
+        .fig-card { background: rgba(255,255,255,.94); border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 20px; display: flex; flex-direction: column; gap: 18px; }
+        .fig-card p { margin-bottom: 0; }
+        .legend-inline { display: flex; gap: 16px; flex-wrap: wrap; font-size: .82rem; color: #6c757d; }
+        .legend-inline span { display: inline-flex; align-items: center; gap: 6px; }
+        .sw { display: inline-block; width: 14px; height: 10px; border-radius: 3px; }
+        .small-note { font-size: .82rem; color: #6c757d; }
+        .seg { display: inline-flex; border: 1px solid var(--global-theme-color); border-radius: 20px; padding: 3px; gap: 3px; background: #fff; }
+        .seg button { font: 500 .9rem var(--body); border: 0; background: transparent; color: var(--global-theme-color); padding: 6px 16px; border-radius: 20px; cursor: pointer; white-space: nowrap; }
+        .seg button[aria-checked="true"] { background: var(--global-theme-color); color: #fff; }
+        .seg button:focus-visible, .pbtn:focus-visible, .tab:focus-visible, .ds:focus-visible, .toggle:focus-visible { outline: 2px solid var(--global-theme-color); outline-offset: 2px; }
+        .pbtn { font: 500 .85rem var(--body); border: 1px solid var(--global-theme-color); background: #fff; color: var(--global-theme-color); padding: 6px 16px; border-radius: 20px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+        .pbtn:hover { background: color-mix(in srgb, var(--global-theme-color) 8%, #fff); }
+        input[type=range].fp-range { -webkit-appearance: auto; appearance: auto; border: 0; margin: 4px 0 0; padding: 0; width: 100%; accent-color: var(--global-theme-color); background: transparent; }
+
+        /* stat strip under the hero */
+        .claims { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; }
+        .claim { background: rgba(255,255,255,.94); border-top: 3px solid var(--global-theme-color); border-radius: 0 0 6px 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 14px 16px; min-width: 0; }
+        .claim .lbl { font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: #6c757d; }
+        .claim .big { font-family: "Roboto Slab", serif; font-size: 2rem; line-height: 1.15; color: var(--global-theme-color); margin: 4px 0; font-variant-numeric: tabular-nums; }
+        .claim .big small { font-size: .5em; color: #6c757d; }
+        .claim p { font-size: .88rem; color: #555; margin: 0; line-height: 1.45; }
+        @media (max-width: 767px) { .claims { grid-template-columns: 1fr; } }
+
+        /* plain-language examples */
+        .stories-bar { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; }
+        .stories-bar p { font-size: .85rem; color: #6c757d; max-width: 52ch; margin: 0; }
+        .stories { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; }
+        @media (max-width: 991px) { .stories { grid-template-columns: 1fr; } }
+        .story { background: rgba(255,255,255,.94); border-left: 4px solid var(--global-theme-color); border-radius: 0 6px 6px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 18px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+        .story p { margin: 0; }
+        .story .kicker { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: #6c757d; }
+        .story h3 { font-size: 1.25rem; margin: 0; }
+        .story .tale { font-size: .93rem; line-height: 1.55; }
+        .story svg.scene { width: 100%; height: auto; display: block; background: var(--paper); border-radius: 6px; }
+        .story .q { font-weight: 500; font-size: .88rem; border-top: 1px solid #e9ecef; padding-top: 12px; }
+        .story .answer { font-family: "Roboto Slab", serif; font-size: 1.05rem; line-height: 1.45; min-height: 4.4em; }
+        .story .answer b { font-weight: 500; }
+        .dots { width: 100%; max-width: 340px; height: auto; display: block; }
+        .dots rect { transition: fill .35s ease; }
+        .story .acc { font-size: .88rem; display: flex; flex-direction: column; gap: 2px; border-top: 1px solid #e9ecef; padding-top: 10px; }
+        .story .acc b { font-weight: 500; }
+        .story .tech { font-size: .75rem; color: #6c757d; line-height: 1.5; margin-top: auto; }
+        .ruler { width: 100%; max-width: 320px; height: auto; display: block; overflow: visible; }
+        .ruler .mk { transition: transform .45s ease; }
+        .ruler text { font-family: var(--body); font-size: 11px; fill: #6c757d; }
+
+        /* bounds */
+        .bounds-bar { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; }
+        .toggle { font: 500 .88rem var(--body); border: 1px solid var(--global-theme-color); background: #fff; color: var(--global-theme-color); padding: 7px 16px; border-radius: 20px; cursor: pointer; }
+        .toggle[aria-pressed="true"] { background: var(--global-theme-color); color: #fff; }
+        .bounds { display: grid; grid-template-columns: 1fr; gap: 16px; }
+        .bound { background: rgba(255,255,255,.94); border-left: 4px solid var(--global-theme-color); border-radius: 0 6px 6px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 16px 20px; display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.5fr); grid-template-areas: "task formula" "readout formula" "note verdict"; gap: 6px 28px; align-items: start; min-width: 0; }
+        .bound .task { grid-area: task; } .bound .readout { grid-area: readout; } .bound .formula { grid-area: formula; align-self: center; } .bound .verdict { grid-area: verdict; } .bound .bnote { grid-area: note; }
+        @media (max-width: 860px) { .bound { grid-template-columns: 1fr; grid-template-areas: "task" "readout" "formula" "verdict" "note"; } }
+        .bound p { margin: 0; }
+        .bound .task { font-weight: 500; }
+        .bound .task span { font-size: .75rem; color: #6c757d; margin-left: 6px; text-transform: uppercase; letter-spacing: .06em; }
+        .bound .readout { font-size: .85rem; color: #6c757d; }
+        .bound .formula { padding: 4px 0; overflow-x: auto; overflow-y: hidden; }
+        .bound .formula mjx-container[display="true"] { margin: .4em 0 !important; }
+        .t-delta, .t-var { border-radius: 4px; padding: 1px 2px; transition: opacity .25s; }
+        .t-delta { background: color-mix(in srgb, var(--fair) 18%, transparent); }
+        .t-var { background: color-mix(in srgb, var(--g0) 14%, transparent); }
+        .zeroed .t-delta { opacity: .25; }
+        .verdict { font-size: .88rem; display: flex; gap: 8px; align-items: baseline; }
+        .verdict .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; transform: translateY(1px); }
+        .bound .bnote { font-size: .8rem; color: #6c757d; line-height: 1.45; }
+        .split { display: grid; grid-template-columns: minmax(0,320px) minmax(0,1fr); gap: 28px; align-items: center; }
+        @media (max-width: 767px) { .split { grid-template-columns: 1fr; } }
+        #probe { width: 100%; max-width: 320px; height: auto; aspect-ratio: 1/1; display: block; background: var(--paper); border-radius: 6px; }
+        .probe-read { font-family: "Roboto Slab", serif; font-size: 2rem; color: var(--global-theme-color); }
+
+        /* architecture */
+        .arch-wrap { overflow-x: auto; }
+        .arch { min-width: 760px; width: 100%; height: auto; display: block; }
+        .arch text { font-family: var(--body); fill: var(--ink); }
+        .arch .lbl { font-size: 13px; }
+        .arch .mut { fill: var(--muted); font-size: 11.5px; }
+        .arch .mth { font-family: "Roboto Slab", serif; font-style: italic; font-size: 16px; }
+        .arch .box { fill: var(--surface); stroke: var(--rule); stroke-width: 1.2; }
+        .arch .bprop { fill: color-mix(in srgb, var(--g1) 8%, #fff); stroke: var(--g1); }
+        .arch .bproj { fill: color-mix(in srgb, var(--fair) 10%, #fff); stroke: var(--fair); }
+        .arch .ln { stroke: var(--muted); stroke-width: 1.4; fill: none; }
+        .arch .loop { stroke: var(--muted); stroke-dasharray: 4 4; fill: none; }
+        .arch .ah { fill: var(--muted); }
+
+        /* playground */
+        .controls { display: grid; grid-template-columns: auto 1fr; gap: 18px 28px; align-items: start; }
+        @media (max-width: 860px) { .controls { grid-template-columns: 1fr; } }
+        .ctl-group { display: flex; flex-wrap: wrap; gap: 14px 26px; align-items: flex-end; }
+        .slider { display: flex; flex-direction: column; gap: 2px; min-width: 150px; }
+        .slider label { font-size: .82rem; color: #6c757d; display: flex; justify-content: space-between; gap: 10px; margin: 0; }
+        .slider output { color: var(--ink); font-variant-numeric: tabular-nums; font-weight: 500; }
+        #fp-only { border: 1px dashed var(--global-theme-color); border-radius: 6px; padding: 6px 14px 10px; margin: 0; display: flex; flex-wrap: wrap; gap: 14px 24px; min-width: 0; }
+        #fp-only legend { font-size: .72rem; color: var(--global-theme-color); padding: 0 6px; letter-spacing: .06em; width: auto; margin: 0; font-weight: 500; }
+        #fp-only:disabled { opacity: .45; }
+        .mode-note { font-size: .88rem; color: #6c757d; min-height: 2.9em; max-width: 75ch; }
+        .panes { display: grid; grid-template-columns: 1.25fr 1fr; gap: 16px; }
+        @media (max-width: 860px) { .panes { grid-template-columns: 1fr; } }
+        .pane { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+        .pane-title { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+        .pane-title h4 { margin: 0; font: 500 .88rem var(--body) !important; color: var(--ink) !important; }
+        .pane-title span { font-size: .78rem; color: #6c757d; }
+        canvas { display: block; width: 100%; border-radius: 6px; background: var(--paper); }
+        #swarm, #graph { height: 300px; }
+        .scrub { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+        .scrub input { flex: 1; min-width: 160px; }
+        .steplabel { font-size: .85rem; color: #6c757d; min-width: 17ch; font-variant-numeric: tabular-nums; }
+        .stats { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); border: 1px solid #e9ecef; border-radius: 6px; overflow: hidden; }
+        .stat { padding: 10px 14px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+        .stat + .stat { border-left: 1px solid #e9ecef; }
+        .stat .k { font-size: .76rem; color: #6c757d; line-height: 1.3; }
+        .stat .v { font-family: "Roboto Slab", serif; font-size: 1.2rem; font-variant-numeric: tabular-nums; line-height: 1.3; color: var(--ink); }
+        .stat .v small { font-size: .8rem; color: #6c757d; }
+        @media (max-width: 860px) { .stats { grid-template-columns: repeat(2, minmax(0,1fr)); } .stat + .stat { border-left: 0; } .stat { border-top: 1px solid #e9ecef; } .stat:nth-child(-n+2) { border-top: 0; } .stat:nth-child(even) { border-left: 1px solid #e9ecef; } .stat:last-child { grid-column: 1/-1; border-left: 0; } }
+        .tries { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 22px; }
+        .tries div { display: flex; flex-direction: column; gap: 4px; font-size: .9rem; min-width: 0; }
+        .tries b { font-weight: 500; color: var(--global-theme-color); }
+        @media (max-width: 860px) { .tries { grid-template-columns: 1fr; } }
+
+        /* results explorer */
+        .tabs { display: flex; gap: 6px; flex-wrap: wrap; border-bottom: 1px solid #e9ecef; }
+        .tab { font: 500 .95rem var(--body); background: none; border: 0; border-bottom: 2px solid transparent; color: #6c757d; padding: 8px 4px; margin-right: 18px; cursor: pointer; margin-bottom: -1px; }
+        .tab[aria-selected="true"] { color: var(--global-theme-color); border-bottom-color: var(--global-theme-color); }
+        .ds-row { display: flex; flex-wrap: wrap; gap: 8px; }
+        .ds { font: 500 .82rem var(--body); border: 1px solid #ced4da; background: #fff; color: #6c757d; padding: 5px 14px; border-radius: 20px; cursor: pointer; }
+        .ds[aria-pressed="true"] { color: #fff; background: var(--global-theme-color); border-color: var(--global-theme-color); }
+        .scenario { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 6px 24px; align-items: baseline; }
+        .scenario p { font-size: .93rem; max-width: 75ch; }
+        .scenario .meta { font-size: .78rem; color: #6c757d; text-align: right; }
+        @media (max-width: 640px) { .scenario { grid-template-columns: 1fr; } .scenario .meta { text-align: left; } }
+        .headline { font-family: "Roboto Slab", serif; font-size: 1.2rem; line-height: 1.4; max-width: 62ch; }
+        .headline b { font-weight: 500; }
+        .res { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(0,1fr); gap: 22px; align-items: start; }
+        @media (max-width: 900px) { .res { grid-template-columns: 1fr; } }
+        #chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+        #chart text { font-family: var(--body); font-size: 11.5px; fill: #6c757d; }
+        #chart .axis-title { fill: var(--ink); font-size: 12px; font-weight: 500; }
+        #chart .grid { stroke: #e9ecef; stroke-width: 1; }
+        #chart .pt { cursor: pointer; }
+        .offchart { font-size: .8rem; color: #6c757d; }
+        .tbl-wrap { overflow-x: auto; border: 1px solid #e9ecef; border-radius: 6px; background: #fff; }
+        #tbl { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; margin: 0; }
+        #tbl th, #tbl td { padding: 6px 12px; text-align: right; white-space: nowrap; border-bottom: 1px solid #e9ecef; font-size: .85rem; font-weight: 400; }
+        #tbl th:first-child, #tbl td:first-child { text-align: left; }
+        #tbl thead th { font-weight: 500; color: #6c757d; background: #f8f9fa; font-size: .8rem; }
+        #tbl tbody tr:last-child td { border-bottom: 0; }
+        #tbl tbody tr { cursor: pointer; }
+        #tbl tbody tr:hover, #tbl tbody tr.hl { background: color-mix(in srgb, var(--fair) 9%, transparent); }
+        #tbl td .sd { color: #6c757d; font-size: .75rem; margin-left: 3px; }
+        #tbl td.best { font-weight: 700; }
+        #tbl td.second span.v { text-decoration: underline; text-underline-offset: 3px; }
+        #tbl tr.ours td { color: var(--fair); font-weight: 500; }
+        #tbl tr.base td:first-child { color: #6c757d; }
+        .bib-head { display: flex; justify-content: flex-end; margin-bottom: 8px; }
+
+        /* particles background, as on the FairRARI page */
+        #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; background-color: var(--global-bg-color); pointer-events: all; }
+        #particles-js canvas { display: block; vertical-align: bottom; position: absolute; top: 0; left: 0; z-index: -1; background: transparent; border-radius: 0; }
+        body, .container, .post { background: transparent !important; position: relative; z-index: 1; }
+        @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+    </style>
+</head>
+
+<body>
+
+    <div class="container mt-4 pt-2">
+        <div class="post">
+
+            <a class="back-link" href="/"><i class="fas fa-arrow-left mr-2"></i>Emmanouil (Manos) Kariotakis</a>
+
+            <header class="post-header text-center my-4">
+                <h1 class="post-title" style="font-size: 2.5rem; font-weight: 500;">FairProp:</h1>
+                <h1 class="post-title" style="font-size: 2rem; font-weight: 400;">Fair Node Representation Learning via Differentiable Propagation Layers</h1>
+
+                <div class="authors mt-3" style="font-size: 1.1rem;">
+                    <a href="https://ekariotakis.github.io/" target="_blank" class="font-weight-bold">Emmanouil (Manos) Kariotakis</a>,
+                    <a href="https://aritrakonar.github.io/" target="_blank" class="font-weight-bold">Aritra Konar</a>
+                </div>
+                <div class="affiliation text-muted font-italic mt-1">
+                    Department of Electrical Engineering (ESAT-STADIUS), KU Leuven, Belgium
+                </div>
+                <div class="venue badge badge-primary mt-2 p-2" style="font-size: 0.9rem; font-weight: 400;">
+                    <a href="https://arxiv.org/abs/2610.06484" target="_blank" style="color: white;">arXiv preprint, 2026 · under review</a>
+                </div>
+
+                <div class="project-links mt-4">
+                    <a href="https://arxiv.org/abs/2610.06484" target="_blank" class="btn btn-dark btn-sm"><i class="fas fa-file-pdf mr-2"></i>Paper</a>
+                    <a href="#playground" class="btn btn-dark btn-sm"><i class="fas fa-sliders mr-2"></i>Interactive demo</a>
+                    <a href="#bibtex" class="btn btn-outline-dark btn-sm"><i class="fas fa-quote-right mr-2"></i>BibTeX</a>
+                </div>
+            </header>
+
+            <article>
+
+                <figure class="my-4 text-center" id="teaser-fig">
+                    <img src="/assets/img/publication_preview/FairProp_teaser.png" alt="A two-group graph is propagated by a standard GNN, which separates the two groups' score distributions, and by FairProp, which aligns their means." class="img-fluid rounded z-depth-1" style="max-width: 900px; width: 100%;" onerror="document.getElementById('teaser-fig').hidden = true">
+                </figure>
+
+                <div id="tldr" class="my-4">
+                    <h2 class="section-title" style="margin-bottom: 10px;"><i class="fa-solid fa-bolt mr-2"></i>TL;DR</h2>
+                    <div class="tldr-callout">
+                        <p class="text-justify">
+                            Graph neural networks pass information between neighbours, and in real networks similar people connect with each other, so predictions can end up tracking race, gender or age.
+                            <strong>FairProp</strong> builds fairness into that propagation step: after every propagation layer, a closed-form projection equalizes the group means of the node embeddings.
+                            The same layer gives fair node classification, link prediction and node regression, converges provably, and costs less than one propagation step.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="abstract" class="my-5">
+                    <h2 class="section-title">Abstract</h2>
+                    <p class="text-justify">
+                        Graph neural networks (GNNs) are the standard for node representation learning and are increasingly deployed in high-stakes domains.
+                        However, the message-passing backbone of GNNs can amplify topological bias, raising concerns about the fairness of their predictions.
+                        We study group fairness at the level of downstream predictions, spanning node classification, link prediction, and node regression, and derive bounds on the demographic parity gap for any number of sensitive groups.
+                        For node classification, our bound is provably no looser than the closest prior bound; for link prediction, we are the first to bound the parity gap of the deployed, sigmoid-activated prediction rather than a pre-activation proxy; and for node regression, we establish the first such bound.
+                        Common to all three tasks, our analysis reveals two distinct sources of bias: the separation between group means and the within-group covariance of the final representations.
+                        Guided by this analysis, we embed fairness directly into the propagation mechanism by augmenting the convex feature-smoothing problem solved by APPNP with a convex constraint on the group-mean gap and a within-group covariance regularizer.
+                        Unfolding projected gradient descent on this problem yields FairProp, whose layers consist of a propagation step followed by a closed-form projection, and which provably converges linearly to the unique fair optimum.
+                        Across three tasks, we empirically demonstrate that FairProp, even with exact group-mean equalization, provides a strong inductive bias that attains excellent fairness-utility trade-offs relative to prevailing baselines on benchmark datasets.
+                    </p>
+                </div>
+
+                <div id="why-fairprop" class="my-5">
+                    <h2 class="section-title">Why FairProp?</h2>
+                    <div class="row mt-4">
+                        <div class="col-md-12 mb-3">
+                            <div class="card card-feature h-100 p-3">
+                                <a href="#bounds" class="text-decoration-none">
+                                    <h4 class="h5"><i class="fas fa-scale-balanced mr-2"></i>Parity Bounds for Three Tasks</h4>
+                                    <p class="text-muted mb-0">We bound the demographic parity gap of the deployed prediction for node classification, link prediction and node regression, for any number of groups. The bounds reveal two sources of bias: the gap between group means and the spread within each group.</p>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <div class="card card-feature h-100 p-3">
+                                <a href="#method" class="text-decoration-none">
+                                    <h4 class="h5"><i class="fas fa-diagram-project mr-2"></i>Fairness During Propagation</h4>
+                                    <p class="text-muted mb-0">Each FairProp layer is an APPNP propagation step followed by a closed-form projection that equalizes the group means. The layers converge linearly to the unique fair optimum, and the projection costs \(O(nd)\).</p>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <div class="card card-feature h-100 p-3">
+                                <a href="#examples" class="text-decoration-none">
+                                    <h4 class="h5"><i class="fas fa-users mr-2"></i>What It Means in Practice</h4>
+                                    <p class="text-muted mb-0">Three real decisions from the benchmarks, sentencing risk, citation suggestions and credit scoring, explained without equations, with the measured results before and after.</p>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <div class="card card-feature h-100 p-3">
+                                <a href="#results" class="text-decoration-none">
+                                    <h4 class="h5"><i class="fas fa-ranking-star mr-2"></i>Strong Empirical Results</h4>
+                                    <p class="text-muted mb-0">Against 18 fairness-aware baselines, FairProp gives the lowest parity gap on all four classification benchmarks, link-prediction gaps of at most 0.003, and exactly zero mean gap in regression.</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PLAIN-LANGUAGE EXAMPLES -->
+                <div id="examples" class="my-5">
+                    <h2 class="section-title"><i class="fas fa-users mr-2"></i>What Goes Wrong, and What FairProp Changes</h2>
+                    <p class="text-justify lead-p">
+                        Many AI systems learn from networks: people linked to similar people, papers linked to the papers they cite. In such networks, like connects with like.
+                        A standard graph model shares information between neighbours, so a person's predicted outcome starts to depend on which group their neighbours belong to.
+                        FairProp adds one step each time neighbours share information: it moves each group's average back to the same place.
+                        Below are three real datasets from the paper, with the measured results before and after.
+                    </p>
+                    <div style="display: flex; flex-direction: column; gap: 16px;" class="mt-4">
+                        <div class="stories-bar">
+                            <div class="seg" role="radiogroup" aria-label="Which model to show" id="story-seg">
+                                <button role="radio" data-v="std" aria-checked="true">Standard model</button>
+                                <button role="radio" data-v="fair" aria-checked="false">With FairProp</button>
+                            </div>
+                            <p>Every number comes from the paper's tables, averaged over 20 runs. The squares are those numbers rescaled to 1,000 people or pairs.</p>
+                        </div>
+                        <div class="stories">
+                            <article class="story">
+                                <div class="kicker"><span>Criminal justice</span><span>Classify a person</span></div>
+                                <h3>Who is predicted to re-offend?</h3>
+                                <svg class="scene" id="scene-0" viewBox="0 0 320 110" aria-hidden="true"></svg>
+                                <p class="tale">A risk tool predicts whether each of 6,172 defendants will commit another crime. Defendants are linked when their criminal records look alike. The two groups are Black and white defendants. Links run largely within each group, so a standard model's predictions end up tracking race.</p>
+                                <div class="q">How differently are Black and white defendants treated?</div>
+                                <svg class="dots" id="dots-0" viewBox="0 0 320 200" role="img" aria-label="Extra people flagged per 1,000"></svg>
+                                <div class="legend-inline"><span><i class="sw" style="background:var(--g0)"></i>extra people flagged</span><span>each square is one person out of 1,000</span></div>
+                                <p class="answer" id="ans-0"></p>
+                                <div class="acc"><span>Predictions that turn out correct</span><b id="acc-0"></b></div>
+                                <p class="tech">Recidivism dataset · node classification · demographic parity gap 18.4 → 3.5 points (Table 1)</p>
+                            </article>
+                            <article class="story">
+                                <div class="kicker"><span>Research tools</span><span>Suggest a link</span></div>
+                                <h3>Which papers should you read next?</h3>
+                                <svg class="scene" id="scene-1" viewBox="0 0 320 110" aria-hidden="true"></svg>
+                                <p class="tale">A literature tool suggests which of 19,717 medical papers should cite each other. The two groups are papers on Type 1 diabetes and papers on Type 2 or experimental diabetes, and most citations stay inside a group. A standard model learns that habit and keeps suggesting same-group papers, so readers rarely see the other group's work. Friend suggestions on social networks create echo chambers the same way.</p>
+                                <div class="q">How strongly does the model favour same-group suggestions?</div>
+                                <svg class="dots" id="dots-1" viewBox="0 0 320 200" role="img" aria-label="Extra expected links per 1,000 pairs"></svg>
+                                <div class="legend-inline"><span><i class="sw" style="background:var(--g0)"></i>extra same-group links</span><span>each square is one pair out of 1,000</span></div>
+                                <p class="answer" id="ans-1"></p>
+                                <div class="acc"><span>Real citation ranked above a random non-citation</span><b id="acc-1"></b></div>
+                                <p class="tech">Pubmed dataset · link prediction · groups from topic class parity, a proxy attribute · dyadic parity gap 0.081 → 0.003 (Table 2)</p>
+                            </article>
+                            <article class="story">
+                                <div class="kicker"><span>Lending</span><span>Estimate a number</span></div>
+                                <h3>What credit score does each applicant get?</h3>
+                                <svg class="scene" id="scene-2" viewBox="0 0 320 110" aria-hidden="true"></svg>
+                                <p class="tale">A bank estimates a credit score for each of 1,000 loan applicants. Applicants are linked when their financial profiles are similar, and similar profiles often share a gender. The two groups are male and female applicants. A standard model's scores drift apart by gender as a result.</p>
+                                <div class="q">How far apart are the average scores of male and female applicants?</div>
+                                <svg class="ruler" id="ruler" viewBox="0 0 320 130" role="img" aria-label="Average predicted score of each group"></svg>
+                                <p class="answer" id="ans-2"></p>
+                                <div class="acc"><span>Typical error of a predicted score</span><b id="acc-2"></b></div>
+                                <p class="tech">German Credit dataset · node regression · mean parity gap 0.089 → 0.000 (Table 3)</p>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOUNDS -->
+                <div id="bounds" class="my-5">
+                    <h2 class="section-title"><i class="fas fa-scale-balanced mr-2"></i>Two Sources of Bias, Three Tasks</h2>
+                    <p class="text-justify">
+                        We bound the parity gap of each task's deployed prediction using two properties of the final embeddings: \(\delta\), the largest distance between group means, and \(\mathbf{C}_k\), the covariance within each group \(k\).
+                        The bounds hold for any number of sensitive groups.
+                    </p>
+                    <div style="display: flex; flex-direction: column; gap: 16px;" class="mt-3">
+                        <div class="bounds-bar">
+                            <div class="legend-inline"><span><i class="sw" style="background:color-mix(in srgb,var(--fair) 30%,transparent)"></i>mean-gap term</span><span><i class="sw" style="background:color-mix(in srgb,var(--g0) 26%,transparent)"></i>within-group variance term</span></div>
+                            <button class="toggle" id="zero" aria-pressed="false" type="button">Equalize group means (\(\delta = 0\))</button>
+                        </div>
+                        <div class="bounds" id="bounds-cards">
+                            <div class="bound">
+                                <div class="task">Node classification <span>Prop. 2</span></div>
+                                <div class="readout">Softmax readout \(\sigma(\mathbf{W}\mathbf{h} + \mathbf{b})\), \(L\)-Lipschitz</div>
+                                <div class="formula">$$\Delta_{\mathrm{DP}} \le L\Big(\class{t-delta}{\|\mathbf{W}\|_2\,\delta} + \class{t-var}{2\max_k \sqrt{\mathrm{tr}(\mathbf{W}\mathbf{C}_k\mathbf{W}^\top)}}\Big)$$</div>
+                                <div class="verdict"><i class="dot" style="background:var(--g0)"></i><span id="v-nc">The nonlinearity adds a variance term.</span></div>
+                                <p class="bnote">No looser than the FairGAT bound whenever the graph has at least as many nodes as classes. On the four benchmarks it is 10–21× tighter (Fig. 10).</p>
+                            </div>
+                            <div class="bound">
+                                <div class="task">Link prediction <span>Prop. 5</span></div>
+                                <div class="readout">Sigmoid of a bilinear score \(\sigma(\mathbf{h}_u^\top \boldsymbol{\Sigma} \mathbf{h}_v)\)</div>
+                                <div class="formula">$$\Delta_{\mathrm{DP}}^{\mathrm{LP}} \le LQ\|\boldsymbol{\Sigma}\|_2\Big(\class{t-delta}{2\delta} + \class{t-var}{\textstyle\sum_k (2\alpha_k + w_k)\sqrt{\mathrm{tr}\,\mathbf{C}_k}}\Big)$$</div>
+                                <div class="verdict"><i class="dot" style="background:var(--g0)"></i><span id="v-lp">The nonlinearity adds a variance term.</span></div>
+                                <p class="bnote">Bounds the sigmoid probability that is actually deployed and evaluated, where earlier results bounded the pre-activation score.</p>
+                            </div>
+                            <div class="bound">
+                                <div class="task">Node regression <span>Prop. 6</span></div>
+                                <div class="readout">Linear readout \(\hat{y} = \mathbf{W}\mathbf{h} + \mathbf{b}\), mean parity gap \(\Delta_{\mathrm{MG}}\)</div>
+                                <div class="formula">$$\Delta_{\mathrm{MG}} \le \class{t-delta}{\|\mathbf{W}\|_2\,\delta}$$</div>
+                                <div class="verdict"><i class="dot" style="background:var(--fair)"></i><span id="v-nr">One term. Removing the mean gap removes the whole bound.</span></div>
+                                <p class="bnote">The first parity bound for node regression. FairProp's mean gap is 0.000 on all three datasets in Table 3.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fig-card mt-4">
+                        <div class="split">
+                            <canvas id="probe" width="320" height="320" aria-label="Two groups with identical means and different spreads"></canvas>
+                            <div style="display: flex; flex-direction: column; gap: 12px; min-width: 0;">
+                                <h3 class="h5 mb-0">Equal means are not the end of the story</h3>
+                                <p>Both groups share the same mean, so \(\delta = 0\). When one group is more spread out, a ring-shaped boundary still tells them apart, and a nonlinear readout can pick that up (Fig. 3).</p>
+                                <div class="slider" style="max-width: 340px;"><label for="ratio"><span>Spread ratio, <span class="g0">minority</span> ÷ <span class="g1">majority</span></span> <output id="ratio-o">2.5×</output></label><input class="fp-range" id="ratio" type="range" min="1" max="4" step="0.1" value="2.5"></div>
+                                <div><div class="probe-read" id="probe-acc">–</div><p class="small-note">accuracy of the best circular boundary at recovering the group (50% is chance)</p></div>
+                                <p>FairProp handles the mean term exactly with the projection. For the variance term it adds an optional regularizer \(\lambda\,\mathrm{tr}(\mathbf{H}^\top\mathbf{M}\mathbf{H})\) inside the propagation objective. In practice the projection alone already gives the headline numbers.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- METHOD -->
+                <div id="method" class="my-5">
+                    <h2 class="section-title"><i class="fas fa-diagram-project mr-2"></i>The FairProp Layer</h2>
+                    <p class="text-justify">
+                        Let \(\mathbf{H}^{(0)} = g_\theta(\mathbf{X})\) be the output of an MLP on the node features and \(\mathbf{S} = \mathbf{D}^{-1/2}(\mathbf{A}+\mathbf{I})\mathbf{D}^{-1/2}\), with Laplacian \(\mathbf{L}_S = \mathbf{I} - \mathbf{S}\).
+                        APPNP's propagation layers are gradient steps on the strongly convex feature-smoothing problem
+                    </p>
+                    <div class="math-block text-center">
+                        $$ \min_{\mathbf{H}} \; f(\mathbf{H}) := \tfrac{1}{2}\gamma\,\|\mathbf{H}-\mathbf{H}^{(0)}\|_F^2 + \tfrac{1}{2}(1-\gamma)\,\mathrm{tr}(\mathbf{H}^\top \mathbf{L}_S \mathbf{H}). $$
+                    </div>
+                    <p class="text-justify">
+                        <strong>FairProp</strong> adds a convex constraint that equalizes the group means and an optional within-group variance penalty \(\lambda\,\mathrm{tr}(\mathbf{H}^\top\mathbf{M}\mathbf{H})\), then unrolls projected gradient descent.
+                        Each layer is the familiar APPNP update followed by a closed-form projection \(\mathbf{P}\):
+                    </p>
+                    <div class="math-block text-center">
+                        $$ \mathbf{H}^{(t+1)} = \mathbf{P}\big[(1-\gamma)\,\mathbf{S}\mathbf{H}^{(t)} + \gamma\,\mathbf{H}^{(0)} - 2\lambda\,\mathbf{M}\mathbf{H}^{(t)}\big], \qquad (\mathbf{P}\mathbf{H})_v = \mathbf{h}_v + \bar{\mathbf{h}} - \bar{\mathbf{h}}_{S_k} \;\; \forall v \in S_k. $$
+                    </div>
+                    <p>Every node embedding is shifted by the difference between the global mean and its own group's mean, so all group means coincide after each layer.</p>
+
+                    <div class="fig-card mt-4">
+                        <div class="arch-wrap">
+                            <svg class="arch" viewBox="0 0 1080 250" role="img" aria-label="FairProp architecture: an MLP, then T layers of propagate and project, then a task readout">
+        <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+        <text x="20" y="129" class="mth">X</text>
+        <line class="ln" x1="38" y1="124" x2="70" y2="124" marker-end="url(#ah)"/>
+        <rect class="box" x="72" y="98" width="86" height="52" rx="8"/>
+        <text x="115" y="121" class="lbl" text-anchor="middle">MLP</text><text x="115" y="139" class="mth" text-anchor="middle" style="font-size:14px">g<tspan baseline-shift="sub" style="font-size:10px">θ</tspan></text>
+        <line class="ln" x1="158" y1="124" x2="214" y2="124" marker-end="url(#ah)"/>
+        <text x="186" y="112" class="mth" text-anchor="middle" style="font-size:14px">H<tspan baseline-shift="super" style="font-size:10px">(0)</tspan></text>
+        <rect x="218" y="40" width="520" height="168" rx="12" class="loop"/>
+        <text x="232" y="60" class="mut">unrolled projected gradient descent on f<tspan baseline-shift="sub" style="font-size:9px">λ</tspan></text>
+        <rect class="box bprop" x="240" y="84" width="262" height="80" rx="8"/>
+        <text x="371" y="106" class="lbl" text-anchor="middle" style="font-weight:600;fill:var(--g1)">propagate</text>
+        <text x="371" y="131" class="mth" text-anchor="middle" style="font-size:15px">(1−γ) S H<tspan baseline-shift="super" style="font-size:10px">(t)</tspan> + γ H<tspan baseline-shift="super" style="font-size:10px">(0)</tspan></text>
+        <text x="371" y="154" class="mth" text-anchor="middle" style="font-size:15px;fill:var(--g0)">− 2λ M H<tspan baseline-shift="super" style="font-size:10px">(t)</tspan></text>
+        <line class="ln" x1="502" y1="124" x2="540" y2="124" marker-end="url(#ah)"/>
+        <rect class="box bproj" x="544" y="84" width="176" height="80" rx="8"/>
+        <text x="632" y="106" class="lbl" text-anchor="middle" style="font-weight:600;fill:var(--fair)">project</text>
+        <text x="632" y="131" class="mth" text-anchor="middle" style="font-size:15px">h<tspan baseline-shift="sub" style="font-size:10px">v</tspan> + h̄ − h̄<tspan baseline-shift="sub" style="font-size:10px">S(v)</tspan></text>
+        <text x="632" y="152" class="mut" text-anchor="middle">closed form, O(nd)</text>
+        <path class="ln" d="M632,164 L632,190 L371,190 L371,168" marker-end="url(#ah)"/>
+        <text x="500" y="203" class="mut" text-anchor="middle">× T layers</text>
+        <line class="ln" x1="738" y1="124" x2="790" y2="124" marker-end="url(#ah)"/>
+        <text x="764" y="112" class="mth" text-anchor="middle" style="font-size:14px">H<tspan baseline-shift="super" style="font-size:10px">(T)</tspan></text>
+        <path class="ln" d="M794,124 C820,124 820,62 846,62" marker-end="url(#ah)"/>
+        <path class="ln" d="M794,124 L846,124" marker-end="url(#ah)"/>
+        <path class="ln" d="M794,124 C820,124 820,186 846,186" marker-end="url(#ah)"/>
+        <rect class="box" x="850" y="40" width="210" height="44" rx="8"/>
+        <text x="866" y="58" class="lbl" style="font-weight:600">Node classification</text><text x="866" y="76" class="mut">softmax(Wh + b) → label</text>
+        <rect class="box" x="850" y="102" width="210" height="44" rx="8"/>
+        <text x="866" y="120" class="lbl" style="font-weight:600">Link prediction</text><text x="866" y="138" class="mut">σ(h<tspan baseline-shift="sub" style="font-size:8px">u</tspan>·h<tspan baseline-shift="sub" style="font-size:8px">v</tspan>) → edge probability</text>
+        <rect class="box" x="850" y="164" width="210" height="44" rx="8"/>
+        <text x="866" y="182" class="lbl" style="font-weight:600">Node regression</text><text x="866" y="200" class="mut">Wh + b → value</text>
+      </svg>
+                        </div>
+                        <p class="main-caption mb-0"><strong>Figure 1.</strong> The fairness lives entirely in the propagation block, so any readout downstream inherits it. With \(\lambda = 0\) the layer has no extra parameters.</p>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6 mb-3">
+                            <div class="card card-feature h-100 p-3">
+                                <h4 class="h5"><i class="fas fa-bolt mr-2"></i>Exact and Cheap</h4>
+                                <p class="text-muted mb-0">The projection is linear and symmetric, so the backward pass is the same operation. It costs \(O(nd)\), less than a single propagation step.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card card-feature h-100 p-3">
+                                <h4 class="h5"><i class="fas fa-arrows-to-dot mr-2"></i>Provably Convergent</h4>
+                                <p class="text-muted mb-0">The layers converge linearly to the unique optimum of the constrained problem (Prop. 7). At APPNP's step size this holds for any \(\lambda < \lambda^* = \gamma\, n_{\min}/2\).</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card card-feature h-100 p-3">
+                                <h4 class="h5"><i class="fas fa-repeat mr-2"></i>Project Every Layer, Not Once</h4>
+                                <p class="text-muted mb-0">A single final projection moves every node in a group by the same amount, so the minority absorbs most of the shift (Remark 16). Projecting at every step gives the smoothest representation with equal means, and the correction diffuses through the graph (Theorem 14).</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card card-feature h-100 p-3">
+                                <h4 class="h5"><i class="fas fa-sliders mr-2"></i>A Tunable Tolerance</h4>
+                                <p class="text-muted mb-0">Replacing the exact constraint with a slab of width \(\delta\) gives a ReLU-like layer. Up to about \(\delta = 10^{-2}\) results barely move; on GermanCredit regression, relaxing recovers MAE from 0.481 to 0.448 (App. G.3).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PLAYGROUND -->
+                <div id="playground" class="my-5">
+                    <h2 class="section-title"><i class="fas fa-sliders mr-2"></i>Watch a Fair Layer at Work</h2>
+                    <p class="text-justify">
+                        A small graph with a <span class="g0">minority of 40 nodes</span> and a <span class="g1">majority of 240</span>, as in Figs. 4 and 5 of the appendix.
+                        A few minority nodes are bridges with many edges into the majority; the rest barely touch it.
+                        Each node starts with a one-dimensional score and the layers propagate it. A toy decision rule then approves every node whose score clears a threshold.
+                    </p>
+                    <div class="fig-card mt-3">
+                        <div class="controls">
+                            <div class="seg" id="mode-seg" role="radiogroup" aria-label="Propagation method">
+                                <button role="radio" data-mode="appnp" aria-checked="false">APPNP</button>
+                                <button role="radio" data-mode="once" aria-checked="false">Project once</button>
+                                <button role="radio" data-mode="fairprop" aria-checked="true">FairProp</button>
+                            </div>
+                            <div class="ctl-group">
+                                <div class="slider"><label for="homo"><span>Same-group edges</span> <output id="homo-o">90%</output></label><input class="fp-range" id="homo" type="range" min="0.70" max="0.98" step="0.02" value="0.90"></div>
+                                <div class="slider"><label for="gamma"><span>Teleport \(\gamma\)</span> <output id="gamma-o">0.10</output></label><input class="fp-range" id="gamma" type="range" min="0.05" max="0.5" step="0.05" value="0.1"></div>
+                                <div class="slider"><label for="T"><span>Layers \(T\)</span> <output id="T-o">10</output></label><input class="fp-range" id="T" type="range" min="1" max="30" step="1" value="10"></div>
+                                <fieldset id="fp-only"><legend>FAIRPROP ONLY</legend>
+                                    <div class="slider"><label for="delta"><span>Tolerance \(\delta\)</span> <output id="delta-o">0</output></label><input class="fp-range" id="delta" type="range" min="0" max="0.5" step="0.05" value="0"></div>
+                                    <div class="slider"><label for="lam"><span>Variance weight \(\lambda/\lambda^*\)</span> <output id="lam-o">0</output></label><input class="fp-range" id="lam" type="range" min="0" max="1" step="0.1" value="0"></div>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <p class="mode-note" id="mode-note"></p>
+                        <div class="panes">
+                            <div class="pane">
+                                <div class="pane-title"><h4>Node scores after layer <span id="layer-n">10</span></h4><span>dashed line: approval threshold τ</span></div>
+                                <canvas id="swarm" height="300" aria-label="Scores of minority and majority nodes on a shared axis"></canvas>
+                            </div>
+                            <div class="pane">
+                                <div class="pane-title"><h4>Who gets moved</h4><span>dot size: shift relative to plain APPNP</span></div>
+                                <canvas id="graph" height="300" aria-label="The simulated graph; node size shows how far each node was shifted"></canvas>
+                                <div class="legend-inline"><span><i class="sw" style="background:var(--g0)"></i>minority</span><span><i class="sw" style="background:var(--g1)"></i>majority</span><span><i class="sw" style="background:transparent;border:1.5px solid var(--ink);border-radius:50%;width:10px"></i>bridge node</span></div>
+                            </div>
+                        </div>
+                        <div class="scrub">
+                            <button class="pbtn" id="play" type="button" aria-label="Play propagation">▶ Play layers</button>
+                            <input class="fp-range" id="step" type="range" min="0" max="10" step="1" value="10" aria-label="Layer">
+                            <span class="steplabel" id="steplabel">after layer 10</span>
+                        </div>
+                        <div class="stats">
+                            <div class="stat"><span class="k">Group-mean gap \(\delta\)</span><span class="v" id="s-gap">–</span></div>
+                            <div class="stat"><span class="k">Spread, ±1σ <span class="g0">min.</span> / <span class="g1">maj.</span></span><span class="v" id="s-sd">–</span></div>
+                            <div class="stat"><span class="k">Approval rate <span class="g0">min.</span> / <span class="g1">maj.</span></span><span class="v" id="s-pos">–</span></div>
+                            <div class="stat"><span class="k">Parity gap \(\Delta_{\mathrm{DP}}\)</span><span class="v" id="s-dp">–</span></div>
+                            <div class="stat"><span class="k">Avg. shift, minority bridge / core</span><span class="v" id="s-shift">–</span></div>
+                        </div>
+                        <div class="tries">
+                            <div><b>Compare Project once with FairProp</b><span>Both close the mean gap exactly. Projecting once moves every minority node by the same amount, so the minority keeps its wide spread and approval rates still differ. FairProp's shifts follow the graph: core nodes move further than bridge nodes, and the minority spread shrinks.</span></div>
+                            <div><b>Raise the share of same-group edges</b><span>Under APPNP the gap between group means grows, because propagation keeps each group's signal circulating inside the group. This is the topology bias FairProp removes.</span></div>
+                            <div><b>Open the tolerance \(\delta\)</b><span>The projection becomes a slab: the gap settles at exactly \(\delta\). Like a ReLU, the layer leaves features inside the slab untouched and only pulls violating ones back to its edge.</span></div>
+                        </div>
+                        <p class="small-note">This is a toy simulation with one feature and no training, written to show the mechanism. Its numbers are not results from the paper.</p>
+                    </div>
+                </div>
+
+                <!-- RESULTS -->
+                <div id="results" class="my-5">
+                    <h2 class="section-title"><i class="fas fa-ranking-star mr-2"></i>Empirical Results</h2>
+                    <div class="claims mb-4">
+                        <div class="claim"><div class="lbl">Node classification</div><div class="big">5–33<small>× smaller gap</small></div><p>Lowest demographic parity gap on all four benchmarks (tied with FairSAD on Credit), at most 0.4 points of accuracy below APPNP.</p></div>
+                        <div class="claim"><div class="lbl">Link prediction</div><div class="big">≤ 0.003<small> parity gap</small></div><p>7–27× below APPNP while keeping over 98% of its AUC on Cora, Citeseer and Pubmed.</p></div>
+                        <div class="claim"><div class="lbl">Node regression</div><div class="big">0.000<small> mean gap</small></div><p>Exactly zero on every dataset, as the linear-readout bound predicts. MAE matches APPNP on both Pokec graphs.</p></div>
+                    </div>
+                    <p class="text-justify">
+                        We compare against 18 fairness-aware baselines. Pick a task and dataset: points toward the top left are better on both axes, and the arrow shows what adding the projection does to APPNP.
+                        All numbers are means over 20 runs, from Tables 5 to 7.
+                    </p>
+                    <div class="fig-card mt-3">
+                        <div class="tabs" role="tablist" id="tabs"></div>
+                        <div class="ds-row" id="ds-row"></div>
+                        <div class="scenario"><p id="scenario"></p><span class="meta" id="ds-meta"></span></div>
+                        <p class="headline" id="headline"></p>
+                        <div class="res">
+                            <div style="display: flex; flex-direction: column; gap: 8px; min-width: 0;"><div id="chart"></div><p class="offchart" id="offchart"></p></div>
+                            <div style="display: flex; flex-direction: column; gap: 8px; min-width: 0;">
+                                <div class="tbl-wrap"><table id="tbl"></table></div>
+                                <p class="small-note" id="tbl-foot"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="bibtex" class="my-5">
+                    <h2 class="section-title"><i class="fas fa-quote-right mr-2"></i>BibTeX</h2>
+                    <div class="bib-head"><button class="pbtn" id="copy-bib" type="button">Copy</button></div>
+<pre><code id="bib-src">@article{kariotakis2026fairprop,
+  title={FairProp: Fair Node Representation Learning via Differentiable Propagation Layers},
+  author={Kariotakis, Emmanouil and Konar, Aritra},
+  journal={arXiv preprint arXiv:2610.06484},
+  year={2026}
+}</code></pre>
+                </div>
+
+            </article>
+        </div>
+    </div>
+
+    <footer class="text-center py-4 text-muted border-top mt-5" style="font-size: 0.9rem; position: relative; z-index: 1;">
+        <div class="container">
+            &copy; 2026 Emmanouil Kariotakis.
+        </div>
+    </footer>
+
+    <div id="particles-js"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha256-fgLAgv7fyCGopR/gBNq2iW3ZKIdqIcyshnUULC4vex8=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/js/mdb.min.js"
+        integrity="sha256-NdbiivsvWt7VYCt6hYNT3h/th9vSTL4EDWeGs5SN3DA=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+    <script type="text/javascript">
+        window.MathJax = {
+            tex: { tags: "ams", inlineMath: [["\\(", "\\)"]], displayMath: [["$$", "$$"]] },
+            loader: { load: ["[tex]/html"] },
+            options: { skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"] }
+        };
+    </script>
+    <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js"></script>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s);
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function rng(seed){let s=seed>>>0;return()=>{s=(s+0x6D2B79F5)>>>0;let t=s;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296;};}
+function gauss(r){let u=0;while(u===0)u=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*r());}
+function setupCanvas(cv){const dpr=window.devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight||+cv.getAttribute("height");
+  if(cv.width!==Math.round(w*dpr)||cv.height!==Math.round(h*dpr)){cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);}
+  const ctx=cv.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);return {ctx,w,h};}
+function alpha(hex,a){const m=hex.replace("#","");const n=parseInt(m.length===3?m.split("").map(c=>c+c).join(""):m,16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;}
+
+/* ---------------- playground model ---------------- */
+const N0=40,N1=240,NB=12,M=840;
+function makeGraph(homo){
+  const r=rng(7),n=N0+N1,grp=new Int8Array(n);for(let i=N0;i<n;i++)grp[i]=1;
+  const adj=Array.from({length:n},()=>new Set());
+  const add=(a,b)=>{if(a!==b){adj[a].add(b);adj[b].add(a);}};
+  const mx=Math.round((1-homo)*M),mIn=M-mx,in0=Math.round(mIn*N0/n);
+  for(let e=0;e<in0;e++)add(Math.floor(r()*N0),Math.floor(r()*N0));
+  for(let e=0;e<mIn-in0;e++)add(N0+Math.floor(r()*N1),N0+Math.floor(r()*N1));
+  for(let e=0;e<mx;e++){const a=r()<0.85?Math.floor(r()*NB):Math.floor(r()*N0);add(a,N0+Math.floor(r()*N1));}
+  const r2=rng(11),h0=new Float64Array(n),jit=new Float64Array(n);
+  for(let i=0;i<n;i++){h0[i]=grp[i]===0?-1.0+0.55*gauss(r2):0.35+0.45*gauss(r2);jit[i]=r2();}
+  const A=adj.map(s=>[...s]);
+  return {n,grp,adj:A,h0,jit,deg:A.map(a=>a.length+1),pos:layout(n,grp,A)};
+}
+function layout(n,grp,adj){
+  const r=rng(3),x=new Float64Array(n),y=new Float64Array(n);
+  for(let i=0;i<n;i++){x[i]=(grp[i]===0?-0.9:0.35)+0.5*(r()-.5);y[i]=(r()-.5)*1.1;if(i<NB)x[i]=-0.35+0.2*(r()-.5);}
+  const k=0.075;let temp=0.08;const dx=new Float64Array(n),dy=new Float64Array(n);
+  for(let it=0;it<220;it++){dx.fill(0);dy.fill(0);
+    for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){let ex=x[i]-x[j],ey=y[i]-y[j],d2=ex*ex+ey*ey+1e-6;const f=k*k/d2;dx[i]+=ex*f;dy[i]+=ey*f;dx[j]-=ex*f;dy[j]-=ey*f;}
+    for(let i=0;i<n;i++)for(const j of adj[i])if(j>i){const ex=x[i]-x[j],ey=y[i]-y[j],d=Math.sqrt(ex*ex+ey*ey)+1e-6,f=d/k*0.5;dx[i]-=ex/d*f*d;dy[i]-=ey/d*f*d;dx[j]+=ex/d*f*d;dy[j]+=ey/d*f*d;}
+    for(let i=0;i<n;i++){dx[i]-=x[i]*0.06;dy[i]-=y[i]*0.1;const d=Math.hypot(dx[i],dy[i])+1e-9,s=Math.min(d,temp)/d;x[i]+=dx[i]*s;y[i]+=dy[i]*s;}
+    temp*=0.985;}
+  const q=(a,p)=>{const b=[...a].sort((u,v)=>u-v);return b[Math.floor(p*(b.length-1))];};
+  const x0=q(x,.01),x1=q(x,.99),y0=q(y,.01),y1=q(y,.99),cl=v=>Math.max(0,Math.min(1,v));
+  return Array.from({length:n},(_,i)=>[cl((x[i]-x0)/(x1-x0||1)),cl((y[i]-y0)/(y1-y0||1))]);
+}
+function stats(G,h){const s=[0,0],c=[0,0];for(let i=0;i<G.n;i++){s[G.grp[i]]+=h[i];c[G.grp[i]]++;}
+  const mu=[s[0]/c[0],s[1]/c[1]],v=[0,0];for(let i=0;i<G.n;i++){const d=h[i]-mu[G.grp[i]];v[G.grp[i]]+=d*d;}
+  let all=0;for(let i=0;i<G.n;i++)all+=h[i];const gm=all/G.n;let gv=0;for(let i=0;i<G.n;i++)gv+=(h[i]-gm)**2;
+  return {mu,sd:[Math.sqrt(v[0]/c[0]),Math.sqrt(v[1]/c[1])],gap:mu[0]-mu[1],c,gm,gsd:Math.sqrt(gv/G.n)};}
+function project(G,h,delta){const st=stats(G,h),s=st.gap,g=Math.sign(s)*Math.max(Math.abs(s)-delta,0),an2=1/st.c[0]+1/st.c[1],out=new Float64Array(G.n);
+  for(let i=0;i<G.n;i++){const a=G.grp[i]===0?1/st.c[0]:-1/st.c[1];out[i]=h[i]-a*g/an2;}return out;}
+function run(G,mode,P){
+  const n=G.n;let h=Float64Array.from(G.h0);const traj=[Float64Array.from(h)];const lam=P.lamFrac*P.gamma*N0/2;
+  for(let t=0;t<P.T;t++){const st=stats(G,h),nh=new Float64Array(n);
+    for(let i=0;i<n;i++){let acc=h[i]/G.deg[i];for(const j of G.adj[i])acc+=h[j]/Math.sqrt(G.deg[i]*G.deg[j]);
+      nh[i]=(1-P.gamma)*acc+P.gamma*G.h0[i];
+      if(mode==="fairprop"&&lam>0)nh[i]-=2*lam*(h[i]-st.mu[G.grp[i]])/st.c[G.grp[i]];}
+    h=mode==="fairprop"?project(G,nh,P.delta):nh;traj.push(Float64Array.from(h));}
+  if(mode==="once")traj.push(project(G,h,0));
+  return traj;
+}
+const NOTES={
+  appnp:"Plain APPNP: T steps of personalized-PageRank smoothing. Nothing stops group information from shaping the scores.",
+  once:"APPNP for T steps, then one exact projection at the very end. Scrub to the last frame to see the jump.",
+  fairprop:"Every layer is an APPNP step followed by the projection, so group means stay equal (or within δ) throughout."
+};
+const S={mode:"fairprop",homo:0.9,gamma:0.1,T:10,delta:0,lamFrac:0,step:10,G:null,traj:{},dom:[-2,1]};
+function recompute(regen){
+  if(regen||!S.G)S.G=makeGraph(S.homo);
+  const P={gamma:S.gamma,T:S.T,delta:S.delta,lamFrac:S.lamFrac};
+  S.traj={appnp:run(S.G,"appnp",P),once:run(S.G,"once",P),fairprop:run(S.G,"fairprop",P)};
+  let lo=Infinity,hi=-Infinity;for(const k of ["appnp","once","fairprop"]){const f=S.traj[k][S.traj[k].length-1];for(const v of f){lo=Math.min(lo,v);hi=Math.max(hi,v);}}
+  const pad=(hi-lo)*0.18;S.dom=[lo-pad,hi+pad];
+  const max=S.traj[S.mode].length-1;const stepEl=$("#step");stepEl.max=max;
+  if(S.step>max||S.atEnd!==false)S.step=max;stepEl.value=S.step;
+  draw();
+}
+function frameAt(mode,step){const t=S.traj[mode];return t[Math.min(step,t.length-1)];}
+function draw(){drawSwarm();drawGraph();drawStats();
+  const max=S.traj[S.mode].length-1,isProj=S.mode==="once"&&S.step===max;
+  $("#steplabel").textContent=S.step===0?"input scores H⁽⁰⁾":isProj?`after layer ${S.T} + projection`:`after layer ${S.step}`;
+  $("#layer-n").textContent=isProj?`${S.T} + projection`:S.step;}
+function drawSwarm(){
+  const cv=$("#swarm"),{ctx,w,h}=setupCanvas(cv),G=S.G,f=frameAt(S.mode,S.step),st=stats(G,f);
+  const ink=css("--ink"),mut=css("--muted"),rule=css("--rule"),c0=css("--g0"),c1=css("--g1"),fair=css("--fair");
+  ctx.clearRect(0,0,w,h);const L=20,R=w-20,X=v=>L+(Math.max(S.dom[0],Math.min(S.dom[1],v))-S.dom[0])/(S.dom[1]-S.dom[0])*(R-L);
+  const bands=[[40,112],[150,222]];
+  ctx.font="12px "+css("--body");ctx.textBaseline="alphabetic";
+  ctx.fillStyle=c0;ctx.fillText("minority · 40 nodes",L,26);ctx.fillStyle=c1;ctx.fillText("majority · 240 nodes",L,142);
+  // axis
+  ctx.strokeStyle=rule;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(L,248);ctx.lineTo(R,248);ctx.stroke();
+  const span=S.dom[1]-S.dom[0],stepT=span>2?0.5:span>0.8?0.2:0.1;ctx.fillStyle=mut;ctx.textAlign="center";
+  for(let v=Math.ceil(S.dom[0]/stepT)*stepT;v<=S.dom[1]+1e-9;v+=stepT){const x=X(v);ctx.beginPath();ctx.moveTo(x,248);ctx.lineTo(x,253);ctx.stroke();ctx.fillText((Math.abs(v)<1e-9?0:v).toFixed(stepT<0.5?1:1),x,268);}
+  ctx.fillText("score",(L+R)/2,290);ctx.textAlign="left";
+  // threshold
+  const tau=st.gm+0.5*st.gsd;ctx.setLineDash([4,4]);ctx.strokeStyle=ink;ctx.globalAlpha=.55;ctx.beginPath();ctx.moveTo(X(tau),32);ctx.lineTo(X(tau),242);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1;
+  ctx.fillStyle=mut;ctx.fillText("τ · approve →",Math.min(X(tau)+6,R-90),24);
+  // points
+  for(let i=0;i<G.n;i++){const g=G.grp[i],b=bands[g],y=b[0]+8+G.jit[i]*(b[1]-b[0]-16);const v=f[i];const out=v<S.dom[0]||v>S.dom[1];
+    ctx.fillStyle=alpha(g?c1:c0,out?0.25:(g?0.55:0.85));ctx.beginPath();ctx.arc(X(v),y,g?2.6:3.2,0,Math.PI*2);ctx.fill();}
+  // means & brackets
+  for(const g of [0,1]){const b=bands[g],col=g?c1:c0,mx=X(st.mu[g]);
+    ctx.strokeStyle=ink;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(mx-5,(b[0]+b[1])/2-5);ctx.lineTo(mx+5,(b[0]+b[1])/2+5);ctx.moveTo(mx+5,(b[0]+b[1])/2-5);ctx.lineTo(mx-5,(b[0]+b[1])/2+5);ctx.stroke();
+    const y=b[1]+7,a=X(st.mu[g]-2*st.sd[g]),z=X(st.mu[g]+2*st.sd[g]);ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(a,y-4);ctx.lineTo(a,y);ctx.lineTo(z,y);ctx.lineTo(z,y-4);ctx.stroke();}
+  // gap
+  const m0=X(st.mu[0]),m1=X(st.mu[1]);ctx.strokeStyle=fair;ctx.fillStyle=fair;ctx.lineWidth=1.5;ctx.setLineDash([2,3]);
+  ctx.beginPath();ctx.moveTo(m0,76);ctx.lineTo(m0,186);ctx.moveTo(m1,76);ctx.lineTo(m1,186);ctx.stroke();ctx.setLineDash([]);
+  ctx.font="500 12px "+css("--mono");const lab=`δ = ${Math.abs(st.gap).toFixed(3)}`;
+  if(Math.abs(m1-m0)>6){ctx.beginPath();ctx.moveTo(m0,131);ctx.lineTo(m1,131);ctx.stroke();}
+  ctx.textAlign="right";ctx.fillText("mean gap "+lab,R,142);
+  ctx.textAlign="left";
+}
+function drawGraph(){
+  const cv=$("#graph"),{ctx,w,h}=setupCanvas(cv),G=S.G,f=frameAt(S.mode,S.step),base=frameAt("appnp",Math.min(S.step,S.T));
+  const ink=css("--ink"),mut=css("--muted"),c0=css("--g0"),c1=css("--g1");ctx.clearRect(0,0,w,h);
+  const pad=16,P=G.pos.map(([x,y])=>[pad+x*(w-2*pad),pad+y*(h-2*pad)]);
+  ctx.lineWidth=0.6;
+  for(let i=0;i<G.n;i++)for(const j of G.adj[i])if(j>i){const cross=G.grp[i]!==G.grp[j];ctx.strokeStyle=alpha(cross?ink:mut,cross?0.22:0.1);ctx.beginPath();ctx.moveTo(P[i][0],P[i][1]);ctx.lineTo(P[j][0],P[j][1]);ctx.stroke();}
+  const order=[...Array(G.n).keys()].sort((a,b)=>G.grp[b]-G.grp[a]);
+  for(const i of order){const sh=Math.abs(f[i]-base[i]),r=2.2+Math.min(sh,1.1)*9;ctx.fillStyle=alpha(G.grp[i]?c1:c0,G.grp[i]?0.6:0.85);
+    ctx.beginPath();ctx.arc(P[i][0],P[i][1],r,0,Math.PI*2);ctx.fill();
+    if(i<NB){ctx.strokeStyle=ink;ctx.lineWidth=1.4;ctx.stroke();}}
+}
+function drawStats(){
+  const G=S.G,f=frameAt(S.mode,S.step),st=stats(G,f),tau=st.gm+0.5*st.gsd,p=[0,0];for(let i=0;i<G.n;i++)if(f[i]>tau)p[G.grp[i]]++;
+  const r0=p[0]/st.c[0],r1=p[1]/st.c[1],base=frameAt("appnp",Math.min(S.step,S.T));let sb=0,sc=0;for(let i=0;i<N0;i++){const d=Math.abs(f[i]-base[i]);if(i<NB)sb+=d;else sc+=d;}
+  $("#s-gap").textContent=Math.abs(st.gap).toFixed(3);
+  $("#s-sd").innerHTML=`${st.sd[0].toFixed(2)} <small>/</small> ${st.sd[1].toFixed(2)}`;
+  $("#s-pos").innerHTML=`${Math.round(r0*100)}% <small>/</small> ${Math.round(r1*100)}%`;
+  $("#s-dp").textContent=(Math.abs(r0-r1)*100).toFixed(1)+" pts";
+  $("#s-shift").innerHTML=S.mode==="appnp"?`<small>n/a</small>`:`${(sb/NB).toFixed(2)} <small>/</small> ${(sc/(N0-NB)).toFixed(2)}`;
+}
+function setMode(m){S.mode=m;document.querySelectorAll("#mode-seg button").forEach(b=>b.setAttribute("aria-checked",b.dataset.mode===m));
+  $("#fp-only").disabled=m!=="fairprop";$("#mode-note").textContent=NOTES[m];S.atEnd=true;recompute(false);}
+document.querySelectorAll("#mode-seg button").forEach(b=>b.addEventListener("click",()=>setMode(b.dataset.mode)));
+document.querySelector("#mode-seg").addEventListener("keydown",e=>{const ms=["appnp","once","fairprop"];let i=ms.indexOf(S.mode);
+  if(e.key==="ArrowRight"||e.key==="ArrowDown")i=(i+1)%3;else if(e.key==="ArrowLeft"||e.key==="ArrowUp")i=(i+2)%3;else return;e.preventDefault();setMode(ms[i]);document.querySelector(`#mode-seg [data-mode=${ms[i]}]`).focus();});
+function bindSlider(id,fmt,key,regen,evt){const el=$("#"+id),o=$("#"+id+"-o");const upd=()=>{S[key]=+el.value;o.textContent=fmt(+el.value);};
+  el.addEventListener("input",()=>{upd();if(!regen){S.atEnd=true;recompute(false);}});
+  if(regen)el.addEventListener("change",()=>{S.atEnd=true;recompute(true);});}
+bindSlider("homo",v=>Math.round(v*100)+"%","homo",true);
+bindSlider("gamma",v=>v.toFixed(2),"gamma",false);
+bindSlider("T",v=>String(v),"T",false);
+bindSlider("delta",v=>v.toFixed(2).replace(/\.?0+$/,"")||"0","delta",false);
+bindSlider("lam",v=>v.toFixed(1).replace(/\.0$/,""),"lamFrac",false);
+$("#step").addEventListener("input",e=>{S.step=+e.target.value;S.atEnd=S.step===S.traj[S.mode].length-1;draw();});
+let timer=null;
+$("#play").addEventListener("click",()=>{
+  if(timer){clearInterval(timer);timer=null;$("#play").textContent="▶ Play layers";return;}
+  const max=S.traj[S.mode].length-1;S.step=0;$("#step").value=0;draw();$("#play").textContent="❚❚ Pause";
+  timer=setInterval(()=>{S.step++;$("#step").value=S.step;S.atEnd=S.step===max;draw();if(S.step>=max){clearInterval(timer);timer=null;$("#play").textContent="▶ Play layers";}},matchMedia("(prefers-reduced-motion: reduce)").matches?600:380);
+});
+S.atEnd=true;$("#mode-note").textContent=NOTES.fairprop;
+recompute(true);
+
+/* ---------------- bounds toggle ---------------- */
+$("#zero").addEventListener("click",e=>{const on=e.currentTarget.getAttribute("aria-pressed")!=="true";e.currentTarget.setAttribute("aria-pressed",on);
+  $("#bounds-cards").classList.toggle("zeroed",on);
+  $("#v-nr").textContent=on?"Bound is zero: the mean parity gap vanishes exactly.":"One term. Removing the mean gap removes the whole bound.";
+  $("#v-nc").textContent=on?"Only the variance term is left.":"The nonlinearity adds a variance term.";
+  $("#v-lp").textContent=on?"Only the variance term is left.":"The nonlinearity adds a variance term.";});
+
+/* ---------------- probe ---------------- */
+const pr=rng(21),PZ=Array.from({length:520},(_,i)=>({g:i<260?0:1,x:gauss(pr),y:gauss(pr)}));
+function drawProbe(){
+  const ratio=+$("#ratio").value;$("#ratio-o").textContent=ratio.toFixed(1)+"×";
+  const cv=$("#probe"),{ctx,w,h}=setupCanvas(cv),c0=css("--g0"),c1=css("--g1"),ink=css("--ink"),mut=css("--muted");
+  const s1=0.11,s0=s1*ratio,pts=PZ.map(p=>{const s=p.g?s1:s0;return {g:p.g,x:p.x*s,y:p.y*s,r:Math.hypot(p.x*s,p.y*s)};});
+  const sorted=[...pts].sort((a,b)=>a.r-b.r);let in1=0,best=0.5,bestR=0;const tot0=260,tot1=260;
+  for(let i=0;i<sorted.length;i++){if(sorted[i].g===1)in1++;const in0=i+1-in1;const acc=(in1+(tot0-in0))/520;if(acc>best){best=acc;bestR=sorted[i].r;}}
+  ctx.clearRect(0,0,w,h);const cx=w/2,cy=h/2,sc=w/2/1.05;
+  for(const p of pts){if(Math.abs(p.x)>1.05||Math.abs(p.y)>1.05)continue;ctx.fillStyle=alpha(p.g?c1:c0,p.g?0.7:0.6);ctx.beginPath();ctx.arc(cx+p.x*sc,cy+p.y*sc,2.4,0,Math.PI*2);ctx.fill();}
+  if(best>0.55){ctx.setLineDash([5,4]);ctx.strokeStyle=ink;ctx.lineWidth=1.4;ctx.beginPath();ctx.arc(cx,cy,bestR*sc,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);}
+  ctx.strokeStyle=ink;ctx.lineWidth=2.2;ctx.beginPath();ctx.moveTo(cx-6,cy-6);ctx.lineTo(cx+6,cy+6);ctx.moveTo(cx+6,cy-6);ctx.lineTo(cx-6,cy+6);ctx.stroke();
+  ctx.fillStyle=mut;ctx.font="12px "+css("--body");ctx.fillText("✕ shared mean",10,h-12);
+  $("#probe-acc").textContent=Math.round(best*100)+"%";
+}
+$("#ratio").addEventListener("input",drawProbe);drawProbe();
+
+/* ---------------- copy ---------------- */
+function copyBtn(btn,src){$(btn).addEventListener("click",async e=>{const b=e.currentTarget,txt=$(src).innerText;
+  try{await navigator.clipboard.writeText(txt);b.textContent="Copied";}catch(_){const r=document.createRange();r.selectNodeContents($(src));const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent="Selected, press ⌘C";}
+  setTimeout(()=>b.textContent="Copy",1800);});}
+copyBtn("#copy-bib","#bib-src");
+
+/* ---------------- results ---------------- */
+// rows: [method, [util, sd, gap, sd] per dataset or null]
+const R={
+ nc:{label:"Node classification",util:"Accuracy",gapL:"ΔDP",uDir:1,scale:"×100",
+  ds:["Credit","Recidivism","Pokec-z","Pokec-n"],
+  info:{
+   "Credit":["Consumer lending. Clients are linked by similar payment behaviour and the model predicts payment default. Sensitive attribute: age (25 or younger vs. over 25).","30,000 nodes · 150,000 edges"],
+   "Recidivism":["Criminal justice. Defendants are linked by similar criminal profiles and the model predicts re-offending. Sensitive attribute: race (Black vs. white).","6,172 nodes · 30,860 edges"],
+   "Pokec-z":["Social network (Pokec, Žilina region). Users are linked by friendship and the model predicts a binary user label. Sensitive attribute: gender.","67,796 nodes · 617,958 edges"],
+   "Pokec-n":["Social network (Pokec, Nitra region). Users are linked by friendship and the model predicts a binary user label. Sensitive attribute: gender.","66,569 nodes · 517,047 edges"]},
+  rows:[
+   ["APPNP",[80.9,.2,3.5,.7],[67.1,.2,18.4,.3],[67.6,.6,5.2,.6],[67.7,.6,6.6,.9]],
+   ["FairProp",[80.8,.2,.4,.3],[66.8,.3,3.5,.4],[67.2,.7,.7,.3],[67.3,.8,.2,.2]],
+   ["FairGNN",[79.9,1.1,2.9,1.9],[54.0,10.0,10.8,7.6],[53.9,3.9,5.0,3.3],[52.8,2.7,4.4,4.8]],
+   ["NIFTY",[80.2,.3,10.1,.4],[68.1,1.0,19.8,.5],[65.5,1.7,11.5,3.1],[64.7,1.1,4.7,3.2]],
+   ["RawlsGCN",[79.6,.7,1.7,.7],[67.9,.9,18.7,1.1],[57.1,6.4,2.5,4.5],[54.5,6.6,2.6,4.7]],
+   ["FairGAT",[79.4,.5,1.2,.3],[67.8,1.1,15.1,.5],[69.4,.9,2.0,1.2],[68.6,.8,2.3,3.0]],
+   ["EDITS",null,[65.8,2.8,19.1,5.5],null,null],
+   ["FairEdit",null,[68.1,.9,19.2,.8],null,null],
+   ["FairVGNN",[80.0,.3,.8,.1],[65.5,2.3,19.5,.4],null,null],
+   ["FairWalk",[73.4,.4,1.5,.8],[60.8,1.2,14.0,1.4],[63.1,.9,4.3,3.7],[61.6,1.0,4.4,3.3]],
+   ["CrossWalk",[73.6,.4,3.1,1.3],[60.6,1.2,16.1,1.3],[63.1,1.1,5.2,3.7],[62.3,.7,4.9,3.5]],
+   ["FMP",[81.2,.1,3.5,.3],[69.8,.3,19.1,.3],[65.8,.4,3.9,.3],[65.3,.5,1.7,.5]],
+   ["FairINV",[79.2,1.0,7.2,4.4],[67.3,1.6,21.1,6.2],[63.1,1.0,8.0,4.8],[62.4,1.1,5.6,4.2]],
+   ["FairSAD",[78.1,.5,.4,.5],[63.4,3.2,10.0,3.8],null,null],
+   ["DAB-GNN",[79.6,1.1,4.6,2.0],[63.3,6.3,8.7,6.3],[66.5,2.0,3.9,3.3],[65.1,1.3,4.6,3.8]],
+   ["FairGP",[81.6,.3,3.3,.8],[68.0,.9,6.4,2.5],null,null]],
+  foot:"Accuracy and ΔDP × 100. Missing rows ran out of memory or time. Recidivism results for APPNP and FairProp use γ = 0.3; other datasets use γ = 0.1."},
+ lp:{label:"Link prediction",util:"AUC",gapL:"ΔDP (dyadic)",uDir:1,xcap:0.07,
+  ds:["Cora","Citeseer","Pubmed"],
+  info:{
+   "Cora":["Citation recommendation. Papers are linked by citations and the model scores missing links. Sensitive attribute: topic class parity, a standard proxy.","2,708 nodes · 5,278 edges"],
+   "Citeseer":["Citation recommendation. Papers are linked by citations and the model scores missing links. Sensitive attribute: topic class parity, a standard proxy.","3,327 nodes · 4,552 edges"],
+   "Pubmed":["Biomedical citation recommendation on diabetes research. Papers are linked by citations and the model scores missing links. Sensitive attribute: topic class parity, which puts Type 1 diabetes papers in one group and Type 2 and experimental diabetes papers in the other.","19,717 nodes · 44,324 edges"]},
+  rows:[
+   ["APPNP",[.908,.007,.031,.004],[.885,.009,.014,.001],[.957,.002,.081,.002]],
+   ["FairProp",[.897,.009,.003,.001],[.875,.009,.002,0],[.942,.003,.003,.001]],
+   ["FairGNN",[.683,.070,.008,.006],[.808,.041,.019,.009],[.873,.065,.007,.008]],
+   ["EDITS",[.905,.008,.009,.002],[.879,.007,.008,.001],[.966,.001,.028,.005]],
+   ["FairEdit",[.799,.049,.015,.010],[.808,.032,.012,.004],[.914,.025,.004,.004]],
+   ["FairVGNN",[.852,.057,.051,.021],[.851,.012,.036,.010],[.745,.089,.032,.036]],
+   ["FairWalk",[.908,.006,.024,.002],[.883,.007,.014,.002],[.961,.002,.071,.002]],
+   ["CrossWalk",[.907,.007,.024,.002],[.884,.008,.014,.001],[.961,.002,.072,.002]],
+   ["FairGAT",[.915,.006,.050,.017],[.919,.007,.027,.016],[.845,.017,.066,.034]],
+   ["FairAdj",[.915,.006,.019,.001],[.888,.006,.013,.001],[.969,.001,.050,.001]],
+   ["FairDrop",[.922,.006,.022,.003],[.900,.007,.015,.002],[.967,.001,.060,.002]],
+   ["FairWire",[.811,.013,0,0],[.817,.013,0,0],[.917,.002,.001,.001]],
+   ["FairINV",[.928,.006,.027,.001],[.924,.007,.014,.001],[.953,.001,.080,.001]],
+   ["DAB-GNN",[.843,.007,.181,.016],[.771,.013,.131,.014],[.872,.004,.180,.010]],
+   ["FairSAD",[.848,.019,.001,0],[.817,.028,.001,0],[.743,.012,.001,.001]],
+   ["FairGP",[.746,.021,0,0],[.865,.010,.001,0],[.835,.009,.001,.001]]],
+  foot:"Dyadic ΔDP is computed on predicted edge probabilities, comparing same-group and cross-group pairs."},
+ nr:{label:"Node regression",util:"MAE",gapL:"ΔMG",uDir:-1,xcap:0.25,ycap:0.8,
+  ds:["GermanCredit","Pokec-z","Pokec-n"],
+  info:{
+   "GermanCredit":["Credit scoring. Loan applicants are linked by feature similarity and the model predicts a continuous credit score. Sensitive attribute: gender (male vs. female).","1,000 nodes · 10,122 edges"],
+   "Pokec-z":["Social network (Žilina). The model predicts each user's profile completion percentage. Sensitive attribute: gender.","67,796 nodes · 617,958 edges"],
+   "Pokec-n":["Social network (Nitra). The model predicts each user's profile completion percentage. Sensitive attribute: gender.","66,569 nodes · 517,047 edges"]},
+  rows:[
+   ["APPNP",[.404,.035,.089,.015],[.199,.001,.091,.001],[.199,.001,.152,.001]],
+   ["FairProp",[.481,.027,0,0],[.200,.001,0,0],[.199,.001,0,0]],
+   ["FairGNN",[.415,.016,.070,.024],[.600,.021,.100,.011],[1.826,5.353,.453,1.322]],
+   ["FairGAT",[.442,.012,.017,.012],[.652,.052,.061,.007],[.654,.042,.094,.008]],
+   ["EDITS",[.414,.013,.024,.019],[.587,.004,.006,.002],[.586,.005,.020,.001]],
+   ["FairVGNN",[.407,.024,.049,.021],null,null],
+   ["FairEdit",[.429,.029,.019,.015],null,null],
+   ["FairWalk",[.445,.008,.017,.012],[.478,.004,.055,.001],[.472,.004,.100,.002]],
+   ["CrossWalk",[.429,.010,.021,.013],[.478,.003,.057,.001],[.471,.004,.109,.002]],
+   ["FMP",[.558,.006,.074,.008],[.204,.002,.096,.001],[.201,.002,.154,.001]],
+   ["FairINV",[.464,0,.209,.001],[.635,0,.085,0],[.640,0,.150,0]],
+   ["DAB-GNN",[.750,.118,.107,.081],[.722,.231,.034,.020],[.640,.159,.081,.034]],
+   ["FairSAD",[.456,.020,.135,.027],null,null],
+   ["FairGP",[.524,.017,.163,.036],null,null],
+   ["FnRGNN",[.521,.011,.022,.018],[.249,.021,.004,.003],[.239,.005,.020,.008]]],
+  foot:"MAE and mean parity gap ΔMG, both lower is better. Pokec results for APPNP and FairProp use γ = 0.5; GermanCredit uses γ = 0.1."}
+};
+const RS={task:"nc",ds:0,hl:null};
+function fmt(task,v){return task==="nc"?v.toFixed(1):v.toFixed(3);}
+function renderTabs(){const t=$("#tabs");t.innerHTML="";for(const k of ["nc","lp","nr"]){const b=document.createElement("button");b.className="tab";b.type="button";b.setAttribute("role","tab");b.setAttribute("aria-selected",k===RS.task);b.textContent=R[k].label;b.onclick=()=>{RS.task=k;RS.ds=0;RS.hl=null;renderResults();};t.appendChild(b);}}
+function renderResults(){
+  renderTabs();const T=R[RS.task],dsName=T.ds[RS.ds];
+  const row=$("#ds-row");row.innerHTML="";T.ds.forEach((d,i)=>{const b=document.createElement("button");b.className="ds";b.type="button";b.textContent=d;b.setAttribute("aria-pressed",i===RS.ds);b.onclick=()=>{RS.ds=i;RS.hl=null;renderResults();};row.appendChild(b);});
+  $("#scenario").textContent=T.info[dsName][0];$("#ds-meta").textContent=T.info[dsName][1];
+  const pts=T.rows.map(r=>({name:r[0],d:r[RS.ds+1]})).filter(p=>p.d);
+  const a=pts.find(p=>p.name==="APPNP").d,f=pts.find(p=>p.name==="FairProp").d;
+  const ratio=f[2]>0?(a[2]/f[2]):Infinity;
+  const du=RS.task==="nc"?`${a[0].toFixed(1)} → ${f[0].toFixed(1)}`:`${a[0].toFixed(3)} → ${f[0].toFixed(3)}`;
+  $("#headline").innerHTML=`Against plain APPNP, the projection takes the parity gap from <b>${fmt(RS.task,a[2])}</b> to <b class="fp">${fmt(RS.task,f[2])}</b>${isFinite(ratio)?` (${ratio.toFixed(1)}× smaller)`:" (eliminated)"}, with ${T.util==='Accuracy'?'accuracy':T.util} going ${du}.`;
+  renderTable(T,pts);renderChart(T,pts);$("#tbl-foot").textContent=T.foot;
+}
+function renderTable(T,pts){
+  const others=pts.filter(p=>p.name!=="APPNP");
+  const uv=others.map(p=>p.d[0]*T.uDir).sort((x,y)=>y-x),gv=others.map(p=>p.d[2]).sort((x,y)=>x-y);
+  const uniq=a=>[...new Set(a)];const ub=uniq(uv),gb=uniq(gv);
+  let h=`<thead><tr><th>Method</th><th>${T.util} ${T.uDir>0?"↑":"↓"}</th><th>${T.gapL} ↓</th></tr></thead><tbody>`;
+  for(const p of pts){const isB=p.name==="APPNP";const u=p.d[0]*T.uDir,g=p.d[2];
+    const uc=isB?"":u===ub[0]?"best":u===ub[1]?"second":"",gc=isB?"":g===gb[0]?"best":g===gb[1]?"second":"";
+    h+=`<tr data-n="${p.name}" class="${p.name==="FairProp"?"ours":""} ${isB?"base":""} ${RS.hl===p.name?"hl":""}"><td>${p.name}${isB?" (unfair)":""}</td><td class="${uc}"><span class="v">${fmt(RS.task,p.d[0])}</span><span class="sd">±${fmt(RS.task,p.d[1])}</span></td><td class="${gc}"><span class="v">${fmt(RS.task,p.d[2])}</span><span class="sd">±${fmt(RS.task,p.d[3])}</span></td></tr>`;}
+  $("#tbl").innerHTML=h+"</tbody>";
+  $("#tbl").querySelectorAll("tbody tr").forEach(tr=>tr.addEventListener("click",()=>{RS.hl=RS.hl===tr.dataset.n?null:tr.dataset.n;renderResults();}));
+}
+function renderChart(T,pts){
+  const box=$("#chart"),W=Math.max(300,box.clientWidth||560),H=Math.round(Math.min(420,Math.max(300,W*0.66)));
+  const m={l:58,r:18,t:16,b:46},iw=W-m.l-m.r,ih=H-m.t-m.b;
+  let xs=pts.map(p=>p.d[2]),ys=pts.map(p=>p.d[0]);
+  const xcap=T.xcap??Infinity,ycap=T.ycap??Infinity;
+  const inX=xs.filter(v=>v<=xcap),inY=ys.filter(v=>v<=ycap);
+  let x1=Math.max(...inX),y0=Math.min(...inY),y1=Math.max(...inY);x1=x1*1.08||0.01;const yp=(y1-y0)*0.1||0.01;y0-=yp;y1+=yp;
+  const X=v=>m.l+Math.min(v,x1)/x1*iw;
+  const Y=v=>{const t=(Math.min(Math.max(v,y0),y1)-y0)/(y1-y0);return T.uDir>0?m.t+(1-t)*ih:m.t+t*ih;};
+  const nice=(lo,hi,n)=>{const span=hi-lo,st=Math.pow(10,Math.floor(Math.log10(span/n))),e=span/n/st,s=st*(e>=5?5:e>=2?2:1);const out=[];for(let v=Math.ceil(lo/s)*s;v<=hi+1e-12;v+=s)out.push(+v.toFixed(6));return out;};
+  const c0=css("--g0"),fair=css("--fair"),ink=css("--ink"),mut=css("--muted"),c1=css("--g1");
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${T.util} against parity gap for each method">`;
+  // good corner
+  s+=`<rect x="${m.l}" y="${m.t}" width="${iw*0.3}" height="${ih*0.35}" fill="${fair}" opacity="0.07"/>`;
+  s+=`<text x="${m.l+8}" y="${m.t+16}" style="fill:${fair};font-size:11px">better on both</text>`;
+  const sc=RS.task==="nc"?1:1;
+  for(const v of nice(0,x1,5)){const x=X(v);s+=`<line class="grid" x1="${x}" x2="${x}" y1="${m.t}" y2="${m.t+ih}"/><text x="${x}" y="${m.t+ih+16}" text-anchor="middle">${RS.task==="nc"?v:v.toFixed(v<0.01&&v>0?3:2)}</text>`;}
+  for(const v of nice(y0,y1,5)){const y=Y(v);s+=`<line class="grid" x1="${m.l}" x2="${m.l+iw}" y1="${y}" y2="${y}"/><text x="${m.l-8}" y="${y+4}" text-anchor="end">${RS.task==="nc"?v:v.toFixed(2)}</text>`;}
+  s+=`<text class="axis-title" x="${m.l+iw/2}" y="${H-8}" text-anchor="middle">${T.gapL} (lower is fairer)</text>`;
+  s+=`<text class="axis-title" transform="translate(14 ${m.t+ih/2}) rotate(-90)" text-anchor="middle">${T.util}${T.uDir<0?" (lower is better, axis flipped)":""} ↑</text>`;
+  const a=pts.find(p=>p.name==="APPNP"),f=pts.find(p=>p.name==="FairProp");
+  const ax=X(a.d[2]),ay=Y(a.d[0]),fx=X(f.d[2]),fy=Y(f.d[0]);const len=Math.hypot(fx-ax,fy-ay);
+  if(len>22){const ux=(fx-ax)/len,uy=(fy-ay)/len;s+=`<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="${fair}"/></marker></defs><line x1="${ax+ux*9}" y1="${ay+uy*9}" x2="${fx-ux*11}" y2="${fy-uy*11}" stroke="${fair}" stroke-width="1.6" stroke-dasharray="4 3" marker-end="url(#arr)"/>`;}
+  const off=[];
+  const order=[...pts].sort((p,q)=>(p.name==="FairProp")-(q.name==="FairProp"));
+  for(const p of order){const isF=p.name==="FairProp",isA=p.name==="APPNP",hl=RS.hl===p.name;
+    const clipped=p.d[2]>xcap||p.d[0]>ycap;if(clipped)off.push(p);
+    const x=X(p.d[2]),y=Y(p.d[0]);
+    if(isF){const r=hl?10:8,pts5=[];for(let k=0;k<10;k++){const rr=k%2?r*0.45:r,an=-Math.PI/2+k*Math.PI/5;pts5.push((x+rr*Math.cos(an)).toFixed(1)+","+(y+rr*Math.sin(an)).toFixed(1));}
+      s+=`<polygon class="pt" data-n="${p.name}" points="${pts5.join(" ")}" fill="${fair}" stroke="${css("--surface")}" stroke-width="1"><title>FairProp: ${T.util} ${fmt(RS.task,p.d[0])}, gap ${fmt(RS.task,p.d[2])}</title></polygon>`;}
+    else if(isA){s+=`<rect class="pt" data-n="${p.name}" x="${x-5}" y="${y-5}" width="10" height="10" fill="${mut}" transform="rotate(45 ${x} ${y})"><title>APPNP: ${T.util} ${fmt(RS.task,p.d[0])}, gap ${fmt(RS.task,p.d[2])}</title></rect>`;}
+    else if(clipped){s+=`<path class="pt" data-n="${p.name}" d="M${x-5},${y+5} L${x+6},${y} L${x-5},${y-5}z" fill="none" stroke="${c1}" stroke-width="1.4"><title>${p.name}: off chart</title></path>`;}
+    else{s+=`<circle class="pt" data-n="${p.name}" cx="${x}" cy="${y}" r="${hl?7:5}" fill="${c1}" fill-opacity="${hl?0.95:0.5}" stroke="${hl?ink:"none"}" stroke-width="1.5"><title>${p.name}: ${T.util} ${fmt(RS.task,p.d[0])}, gap ${fmt(RS.task,p.d[2])}</title></circle>`;}
+    if(isF||isA||hl){const lx=x+(x>m.l+iw*0.75?-10:10),anc=x>m.l+iw*0.75?"end":"start",ly=y+(isA?-9:isF?16:-9);
+      s+=`<text x="${lx}" y="${ly}" text-anchor="${anc}" style="fill:${isF?fair:ink};font-weight:600;font-size:12px">${p.name}</text>`;}
+  }
+  box.innerHTML=s+"</svg>";
+  box.querySelectorAll(".pt").forEach(el=>el.addEventListener("click",()=>{RS.hl=RS.hl===el.dataset.n?null:el.dataset.n;renderResults();}));
+  $("#offchart").textContent=off.length?"Off chart: "+off.map(p=>`${p.name} (${T.util} ${fmt(RS.task,p.d[0])}, gap ${fmt(RS.task,p.d[2])})`).join("; ")+". Shown as an open arrow at the edge.":"Tap a point or a table row to label it.";
+}
+renderResults();
+
+/* ---------------- plain-language stories ---------------- */
+const ST={v:"std"};
+const STORY={
+  std:{d0:184,d1:81,gap:0.089,
+    a0:"For every 1,000 Black and 1,000 white defendants, the model flags about <b>184 more</b> in one group than in the other.",
+    a1:"For every 1,000 pairs of papers, the model expects about <b>81 more</b> links among same-group pairs than among cross-group pairs.",
+    a2:"One group's average score sits <b>0.089 points</b> above the other's, about a fifth of the model's typical error.",
+    c0:"67.1%",c1:"95.7% of the time",c2:"0.404 points"},
+  fair:{d0:35,d1:3,gap:0,
+    a0:"The gap falls to about <b class=\"fp\">35 per 1,000</b>, five times smaller, while accuracy barely moves.",
+    a1:"The gap falls to about <b class=\"fp\">3 per 1,000</b>, 27 times smaller, so the other group's papers get a fair chance to appear.",
+    a2:"The two averages are <b class=\"fp\">exactly equal</b>, as the paper's theory guarantees for this kind of prediction.",
+    c0:"66.8% (was 67.1%)",c1:"94.2% of the time (was 95.7%)",c2:"0.481 points (was 0.404). Fairness costs some accuracy here; on the much larger Pokec social networks the error did not change."}
+};
+function drawScene(id,kind){
+  const el=$(id),r=rng(kind==="paper"?5:kind==="credit"?9:2),c0=css("--g0"),c1=css("--g1"),mut=css("--muted");
+  const nodes=[];for(let g=0;g<2;g++)for(let i=0;i<13;i++){const cx=g?222:98,a=(i/13)*Math.PI*2+r()*0.5,d=i===0?0:14+r()*30;nodes.push({g,x:cx+Math.cos(a)*d*1.5,y:55+Math.sin(a)*d});}
+  let e="";const near=(i,j)=>Math.hypot(nodes[i].x-nodes[j].x,nodes[i].y-nodes[j].y),seen=new Set();
+  const line=(i,j,same)=>{const k=Math.min(i,j)+"-"+Math.max(i,j);if(seen.has(k))return;seen.add(k);e+=`<line x1="${nodes[i].x.toFixed(1)}" y1="${nodes[i].y.toFixed(1)}" x2="${nodes[j].x.toFixed(1)}" y2="${nodes[j].y.toFixed(1)}" stroke="${mut}" stroke-opacity="${same?0.4:0.85}" stroke-width="${same?1:1.4}" ${same?"":'stroke-dasharray="3 3"'}/>`;};
+  for(let i=0;i<nodes.length;i++){const c=nodes.map((_,j)=>j).filter(j=>j!==i&&nodes[j].g===nodes[i].g).sort((a,b)=>near(i,a)-near(i,b));line(i,c[0],1);line(i,c[1],1);if(r()<0.4)line(i,c[2],1);}
+  const cross=[];for(let i=0;i<13;i++)for(let j=13;j<26;j++)cross.push([near(i,j),i,j]);cross.sort((a,b)=>a[0]-b[0]);line(cross[0][1],cross[0][2],0);line(cross[3][1],cross[3][2],0);
+  let n="";for(const p of nodes){const col=p.g?c1:c0;
+    if(kind==="paper")n+=`<rect x="${(p.x-4).toFixed(1)}" y="${(p.y-5).toFixed(1)}" width="8" height="10" rx="1.5" fill="${col}"/>`;
+    else n+=`<circle cx="${p.x.toFixed(1)}" cy="${(p.y-3.5).toFixed(1)}" r="2.6" fill="${col}"/><path d="M${(p.x-4).toFixed(1)},${(p.y+5).toFixed(1)} a4,4 0 0 1 8,0 z" fill="${col}"/>`;}
+  el.innerHTML=e+n;
+}
+function drawDots(id,count){
+  const el=$(id),on=css("--g0"),off=css("--rule");let h="";
+  for(let i=0;i<1000;i++){const x=(i%40)*8,y=Math.floor(i/40)*8;h+=`<rect x="${x}" y="${y}" width="6.5" height="6.5" rx="1.5" fill="${i<count?on:off}"/>`;}
+  el.innerHTML=h;
+}
+function updateDots(id,count){const on=css("--g0"),off=css("--rule");$(id).querySelectorAll("rect").forEach((r,i)=>r.setAttribute("fill",i<count?on:off));}
+function drawRuler(){
+  const el=$("#ruler"),c0=css("--g0"),c1=css("--g1"),ink=css("--ink"),rule=css("--rule"),fair=css("--fair");
+  const L=20,W=280,sc=W/0.5,gap=STORY[ST.v].gap,mid=L+W/2;
+  let h=`<line x1="${L}" y1="70" x2="${L+W}" y2="70" stroke="${rule}" stroke-width="2"/>`;
+  for(let k=0;k<=5;k++){const x=L+k*W/5;h+=`<line x1="${x}" y1="66" x2="${x}" y2="74" stroke="${rule}"/>`;}
+  h+=`<text x="${L}" y="92">0.1 points per tick</text>`;
+  h+=`<line x1="${mid-0.404*sc/2}" y1="112" x2="${mid+0.404*sc/2}" y2="112" stroke="${rule}" stroke-width="5" stroke-linecap="round"/><text x="${mid}" y="127" text-anchor="middle">typical error of one prediction (0.404)</text>`;
+  const a=mid-gap*sc/2,b=mid+gap*sc/2;
+  h+=`<g class="mk" style="transform:translate(${a}px,0)"><line x1="0" y1="34" x2="0" y2="70" stroke="${c0}" stroke-width="3"/><text x="-4" y="26" text-anchor="end" style="fill:${c0};font-weight:600">one group's average</text></g>`;
+  h+=`<g class="mk" style="transform:translate(${b}px,0)"><line x1="0" y1="44" x2="0" y2="70" stroke="${c1}" stroke-width="3"/><text x="4" y="40" style="fill:${c1};font-weight:600">the other's</text></g>`;
+  h+=`<text x="${L+W}" y="92" text-anchor="end" style="fill:${gap?ink:fair};font-weight:600;font-family:var(--mono)">gap ${gap.toFixed(3)}</text>`;
+  el.innerHTML=h;
+}
+function renderStories(first){
+  const d=STORY[ST.v];
+  if(first){drawDots("#dots-0",d.d0);drawDots("#dots-1",d.d1);}else{updateDots("#dots-0",d.d0);updateDots("#dots-1",d.d1);}
+  drawRuler();
+  $("#ans-0").innerHTML=d.a0;$("#ans-1").innerHTML=d.a1;$("#ans-2").innerHTML=d.a2;
+  $("#acc-0").textContent=d.c0;$("#acc-1").textContent=d.c1;$("#acc-2").textContent=d.c2;
+}
+function drawScenes(){drawScene("#scene-0","person");drawScene("#scene-1","paper");drawScene("#scene-2","credit");}
+function setStory(v){ST.v=v;$("#story-seg").querySelectorAll("button").forEach(b=>b.setAttribute("aria-checked",b.dataset.v===v));renderStories(false);}
+$("#story-seg").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>setStory(b.dataset.v)));
+$("#story-seg").addEventListener("keydown",e=>{if(["ArrowLeft","ArrowRight","ArrowUp","ArrowDown"].includes(e.key)){e.preventDefault();const v=ST.v==="std"?"fair":"std";setStory(v);$(`#story-seg [data-v=${v}]`).focus();}});
+drawScenes();renderStories(true);
+
+/* ---------------- resize & theme ---------------- */
+let rz;window.addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>{draw();drawProbe();renderResults();},120);});
+const redraw=()=>{draw();drawProbe();renderResults();drawScenes();renderStories(true);};
+try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",redraw);}catch(_){}
+new MutationObserver(redraw).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+})();
+</script>
+
+    <script>
+        function getThemeColor() {
+            return getComputedStyle(document.documentElement).getPropertyValue("--global-theme-color").trim() || "#9C6412";
+        }
+        function initParticles() {
+            if (typeof particlesJS === "undefined") return;
+            particlesJS("particles-js", {
+                "particles": {
+                    "number": { "value": 70, "density": { "enable": true, "value_area": 900 } },
+                    "color": { "value": getThemeColor() },
+                    "shape": { "type": "circle" },
+                    "opacity": { "value": 0.35 },
+                    "size": { "value": 2.5, "random": true },
+                    "line_linked": { "enable": true, "distance": 160, "color": "#aaaaaa", "opacity": 0.3, "width": 1 },
+                    "move": { "enable": !matchMedia("(prefers-reduced-motion: reduce)").matches, "speed": 1.5 }
+                },
+                "interactivity": {
+                    "detect_on": "window",
+                    "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": false, "mode": "push" } },
+                    "modes": { "grab": { "distance": 200, "line_linked": { "opacity": 0.8 } } }
+                },
+                "retina_detect": true
+            });
+        }
+        window.addEventListener("load", initParticles);
+    </script>
+</body>
+
+</html>
